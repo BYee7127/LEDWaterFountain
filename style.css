@@ -1,0 +1,68 @@
+@charset "utf-8";
+
+/* -------------------- Main Body Stuff -------------------- */
+html {
+    position: relative;
+    min-height: 100%
+}
+
+body {
+    /* background */
+    background-color: #cab0e4;
+
+    /* modify the font */
+    color: #000000;
+    font-size: 22px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    text-align: center;
+}
+
+h1 {
+    font-size: 50px;
+    text-shadow: 4px 4px 2px #c1d5ff;
+}
+
+/* -------------------- Main Body Class Items -------------------- */
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    white-space: nowrap;
+}
+
+
+
+
+
+.triangle-obtuse {
+    position: relative;
+    padding: 15px;
+    margin: 1em 0 3em;
+    color: #3c0077;
+    background: #3399ff;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+}
+
+.triangle-obtuse:after {
+    content: "";
+    position: absolute;
+    top: 25px;
+    bottom: auto;
+    left: -40px;
+    border: 0;
+    border-right-width: 50px;
+    border-top-width: 20px;
+    border-style: solid;
+    border-color: transparent #3399ff;
+    display: block;
+    width: 0;
+}
