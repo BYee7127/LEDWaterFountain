@@ -36,33 +36,3 @@ h1 {
     width: 100%;
     white-space: nowrap;
 }
-
-
-
-
-
-.triangle-obtuse {
-    position: relative;
-    padding: 15px;
-    margin: 1em 0 3em;
-    color: #3c0077;
-    background: #3399ff;
-    -webkit-border-radius: 10px;
-    -moz-border-radius: 10px;
-    border-radius: 10px;
-}
-
-.triangle-obtuse:after {
-    content: "";
-    position: absolute;
-    top: 25px;
-    bottom: auto;
-    left: -40px;
-    border: 0;
-    border-right-width: 50px;
-    border-top-width: 20px;
-    border-style: solid;
-    border-color: transparent #3399ff;
-    display: block;
-    width: 0;
-}
