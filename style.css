@@ -12,7 +12,7 @@ body {
 
     /* modify the font */
     color: #000000;
-    font-size: 22px;
+    font-size: 20px;
 }
 
 h1,
@@ -32,6 +32,17 @@ h1 {
     white-space: nowrap;
 }
 
-.container {
-    width: 100%;
+@media (min-width: 1000px) {
+    .container {
+      max-width: 1000px;
+    }
 }
+
+@media (min-width: 1900px) {
+    .container {
+      max-width: 1700px;
+    }
+}
+
+  
+  
