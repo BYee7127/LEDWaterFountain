@@ -34,6 +34,14 @@
 						</li>
 						<li class="nav-item border-right border-dark mr-3 ml-3"></li>
 						<li class="nav-item">
+							<a class="nav-link text-dark" href="datasheets.html">Datasheets</a>
+						</li>
+                        <li class="nav-item border-right border-dark mr-3 ml-3"></li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" href="expenses.html">Expense Tracker</a>
+                        </li>
+						<li class="nav-item border-right border-dark mr-3 ml-3"></li>
+						<li class="nav-item">
 							<a class="nav-link text-dark" href="about.html">About</a>
 						</li>
 					</ul>
@@ -44,10 +52,126 @@
 
         <div class="container">
             <h2>Meetings</h2>
-            Date
+			2023-May-29
+			<ul>
+				<li>Figured out the dimensions of the top and bottom of the trays
+					<ul>
+						<li>Top = 25.1 cm</li>
+						<li>Bottom = 24.85 cm</li>
+						<li>Side height = 6 cm</li>
+						<li>Bottom thickness = 2.5 mm</li>
+						<li>Side thickness = 3.5-4 mm</li>
+						<li>Center is about 1 cm higher than the bottom edge</li>
+					</ul>
+				</li>
+				<li>Started on order for LED strip - $73.96, June 5th arrival date
+					<ul>
+						<li>LEDs will sit on top of the pump area</li>
+					</ul>
+				</li>
+				<li>Soldered on resistors using heat gun and solder paste
+					<ul>
+						<li>use tweezers to apply a good enough amount of paste onto the pads</li>
+						<li>direct the heat gun over the component and keep it there until the solder bubbles and shrinks</li>
+						<li>CAUTION: BOARD WILL BE <b><u>******HOT******</u></b></li>
+					</ul>
+				</li>
+				<li>Will need to create vector file for cutting the trays
+					<ul>
+						<li>reduce speed of laser such that it can cut through the curved tray of the bottom.</li>
+						<li>Top tray of pump area = leave a 1-1.5” edge around the center for the tubes to go through.
+							<ul>
+								<li>Also cut out holes for tubes = roughly 7mm</li>
+							</ul>
+						</li>
+						<li>Stage area = one of the trays, cut the entire bottom out
+							<ul>
+								<li>account for the thickness of the sides of the tray</li>
+							</ul>
+						</li>
+						<li>Stand/Service box = split the sheet in half lengthwise then cut out curvature of the bottom (?)</li>
+					</ul>
+				</li>
+				<li>NeoPixel silicon LED strip
+					<ul>
+						<li><a href="https://www.adafruit.com/product/3869">https://www.adafruit.com/product/3869</a></li>
+						<li>Thicker version with standard trajectory for lighting</li>
+						<li>not ideal for dunking underwater or long term outdoor exposure</li>
+						<li>Durable enough for projects to survive the outdoors</li>
+					</ul>
+				</li>
+			</ul>
+
+			2023-May-15
+			<ul>
+				<li>
+					Soldered wires to the pump wires such that it'd be easier to attach them to the circuit board.
+					<img src="images/SolderedPumps" height="500px" />
+				</li>
+				<li>For security of the solder, added heat shrink tubing around the joint.</li>
+				<li>Fitted plastic tubing over outlet of the pumps.</li>
+				<li>Started looking into LED strlps again
+					<ul>
+						<li>Found a site called Solid Apollo that may have something</li>
+					</ul>
+				</li>
+			</ul>
+
+            2023-Apr-25
             <ul>
-                <li>Items discussed</li>
+                <li>Hooking up the pump to test the circuit again before demo.</li>
+				<ul>
+					<li><i>Demo did not work.</i></li>
+					<li>Discovered the STMCube does not like Alex and erased previous settings for the Discovery Board.</li>
+					<li>Also discovered that the PWM on the Discovery Board reads a range for 16 bits while the potentiometer outputs nowhere near as high.</li>
+				</ul>
             </ul>
+
+			2023-Apr-19
+			<ul>
+				<li>Creating the cricuit for the prototype based off of examples found online.</li>
+				<li>First tested to see if the pump works in general (it does), but at the same time, didn't run it for too long to prevent damage (cannot operate outside of water for very long).</li>
+				<li>Tested circuit using an LED first to see if it can be dimmed via potentiometer.</li>
+			</ul>
+
+			2023-Mar-30
+			<ul>
+				<li>Alex finished prototype schematic.</li>
+				<li>Searching for additional materials needed, such as sealant and waterproof adhesive.</li>
+			</ul>
+
+			2023-Mar-23
+			<ul>
+				<li>Continued working on the proposal...</li>
+			</ul>
+
+			2023-Mar-21
+			<ul>
+				<li>Created Gantt chart for initial proposal paper.</li>
+				<li>Acrylic trays for encapsulation shipped.</li>
+				<li>Fiddled with LaTex formatting to get the graphics to appear (used the wrong compiler. Should have been using pdfLaTex).</li>
+			</ul>
+
+			2023-Feb-28
+			<ul>
+				<li>Began presentation slides for the abstract.</li>
+				<li>Began initial sketches for the slides.</li>
+				<li>Continue looking for ideal pumps.</li>
+			</ul>
+
+			2023-Feb-22
+			<ul>
+				<li>Created this website.</li>
+				<li>Created the github repository housing both the website and code to run the project.</li>
+			</ul>
+
+			2023-Feb-17
+			<ul>
+				<li>Discussion of the Mission Statement.</li>
+				<li>Began looking for submersible LEDs and other options.</li>
+			</ul>
+
+			<p><br/></p>
         </div>
 
 		<footer class="footer border-top text-center p-4">

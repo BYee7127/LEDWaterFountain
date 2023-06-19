@@ -1,0 +1,260 @@
+<!--
+	Project:	2023 Capstone Project
+	Author:		Beverly Yee, Alex Gray
+	Date:		2023-Feb-22
+-->
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="author" content="Beverly Yee & Alex Gray">
+
+		<title>Expense Tracker</title>
+
+		<link rel="stylesheet" type="text/css" href="bootstrap/dist/css/bootstrap.css" />
+		<link rel="stylesheet" type="text/css" href="style.css" />
+	</head>
+
+	<body>
+		<br/>
+		<h1>Visualize the Invisible</h1>
+	
+		<!-- Navigation tabs -->
+		<header style="width: auto">
+			<nav class="navbar navbar-expand-md navbar-dark">
+				<div class="navbar">
+					<ul class="navbar-nav" id="navlist">
+						<li class="nav-item ml-3">
+							<a class="nav-link text-dark" href="index.html">Home</a>
+						</li>
+						<li class="nav-item border-right border-dark mr-3 ml-3"></li>
+						<li class="nav-item">
+							<a class="nav-link text-dark" href="meeting.html">Meeting Log</a>
+						</li>
+						<li class="nav-item border-right border-dark mr-3 ml-3"></li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" href="datasheets.html">Datasheets</a>
+                        </li>
+                        <li class="nav-item border-right border-dark mr-3 ml-3"></li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" href="expenses.html">Expense Tracker</a>
+                        </li>
+                        <li class="nav-item border-right border-dark mr-3 ml-3"></li>
+                        <li class="nav-item">
+							<a class="nav-link text-dark" href="about.html">About</a>
+						</li>
+					</ul>
+				</div>
+			</nav>
+		</header>
+		<br />
+
+        <div class="container">
+            <h2>Expenses Tracker</h2>
+            <br/>
+
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Item</th>
+                        <th>Item #</th>
+                        <th>Purchase Date</th>
+                        <th>Vendor</th>
+                        <th>Qty</th>
+                        <th>Price (ea)</th>
+                        <th>Total</th>
+                        <th>Comments</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th>1</th>
+                        <td>Water pumps + tubing (x4)</td>
+                        <td>B097F4576N</td>
+                        <td>2023-Mar-17</td>
+                        <td>Amazon</td>
+                        <td>4</td>
+                        <td>$10.59</td>
+                        <td>$45.44</td>
+                        <td>Each order comes with 4 pumps and tubes. Total of 16 received.</td>
+                    </tr>
+                    <tr>
+                        <th>2</th>
+                        <td>10" x 2.5" acrylic trays</td>
+                        <td>ACYL102</td>
+                        <td>2023-Mar-17</td>
+                        <td>LO Florist Supplies</td>
+                        <td>4</td>
+                        <td>$7.99</td>
+                        <td>$44.02</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <th>3</th>
+                        <td>Clear caulking</td>
+                        <td>727380</td>
+                        <td>2023-Apr-</td>
+                        <td>Lowe's</td>
+                        <td>1</td>
+                        <td>$7.78</td>
+                        <td>$7.51</td>
+                        <td>Total reflects 10% employee discount.</td>
+                    </tr>
+                    <tr>
+                        <th>4</th>
+                        <td>Double-sided tape</td>
+                        <td>394705</td>
+                        <td>2023-Apr-</td>
+                        <td>Lowe's</td>
+                        <td>1</td>
+                        <td>$9.98</td>
+                        <td>$9.63</td>
+                        <td>Total reflects 10% employee discount. Waterproof. 1" x 5' by Scotch</td>
+                    </tr>
+                    <tr>
+                        <th>5</th>
+                        <td>Clear duct tape</td>
+                        <td>488028</td>
+                        <td>2023-Apr-</td>
+                        <td>Lowe's</td>
+                        <td>1</td>
+                        <td>$8.98</td>
+                        <td>$8.67</td>
+                        <td>Total reflects 10% employee discount. Waterproof. 1.88" by 27' by Gorilla</td>
+                    </tr>
+                    <tr>
+                        <th>6</th>
+                        <td>8" x 10" acrylic sheets</td>
+                        <td>55844</td>
+                        <td>2023-Apr-</td>
+                        <td>Lowe's</td>
+                        <td>2</td>
+                        <td>$4.58</td>
+                        <td>$8.88</td>
+                        <td>Total reflects 10% employee discount.</td>
+                    </tr>
+                    <tr>
+                        <th>7</th>
+                        <td>PCB boards</td>
+                        <td></td>
+                        <td>2023-May-05</td>
+                        <td>OshPark</td>
+                        <td>1</td>
+                        <td></td>
+                        <td>$71.45</td>
+                        <td>OshPark orders always come with 3 boards in one order.</td>
+                    </tr>
+                    <tr>
+                        <th>8</th>
+                        <td>Power supply</td>
+                        <td>B078RT3ZPS</td>
+                        <td>2023-May-06</td>
+                        <td>Amazon</td>
+                        <td>1</td>
+                        <td>$16.49</td>
+                        <td>$17.69</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <th>9</th>
+                        <td>Audio port</td>
+                        <td>STX-3120-3B</td>
+                        <td>2023-May-06</td>
+                        <td>Digi-Key</td>
+                        <td>3</td>
+                        <td>$0.84</td>
+                        <td>$2.52</td>
+                        <td>2 extra.</td>
+                    </tr>
+                    <tr>
+                        <th>10</th>
+                        <td>Surface Mount Transistors</td>
+                        <td>IRLZ34NSTRLPBF</td>
+                        <td>2023-May-06</td>
+                        <td>Digi-Key</td>
+                        <td>16</td>
+                        <td>$1.53</td>
+                        <td>$24.48</td>
+                        <td>4 extra.</td>
+                    </tr>
+                    <tr>
+                        <th>11</th>
+                        <td>Surface Mount Resistors</td>
+                        <td>RC0402FR-071KL</td>
+                        <td>2023-May-06</td>
+                        <td>Digi-Key</td>
+                        <td>16</td>
+                        <td>$0.015</td>
+                        <td>$0.24</td>
+                        <td>4 extra.</td>
+                    </tr>
+                    <tr>
+                        <th>12</th>
+                        <td>Surface Mount Diodes</td>
+                        <td>B140-13-F</td>
+                        <td>2023-May-06</td>
+                        <td>Digi-Key</td>
+                        <td>16</td>
+                        <td>$0.316</td>
+                        <td>$5.06</td>
+                        <td>4 extra.</td>
+                    </tr>
+                    <tr>
+                        <th>13</th>
+                        <td>Terminal Blocks</td>
+                        <td>282834-2</td>
+                        <td>2023-May-06</td>
+                        <td>Digi-Key</td>
+                        <td>16</td>
+                        <td>$1.288</td>
+                        <td>$20.61</td>
+                        <td>4 extra.</td>
+                    </tr>
+                    <tr>
+                        <th>14</th>
+                        <td>Fees</td>
+                        <td></td>
+                        <td>2023-May-06</td>
+                        <td>Digi-Key</td>
+                        <td></td>
+                        <td></td>
+                        <td>$11.45</td>
+                        <td>Shipping ($4.99), tarrif ($2.45), and tax ($4.01).</td>
+                    </tr>
+                    <tr>
+                        <th>15</th>
+                        <td>Solder Paste</td>
+                        <td>B075ZR52JM</td>
+                        <td>2023-May-12</td>
+                        <td>Amazon</td>
+                        <td></td>
+                        <td></td>
+                        <td>$12.82</td>
+                        <td>Shipping and tax included.</td>
+                    </tr>
+                    <tr>
+                        <th>16</th>
+                        <td>LED strip light + power adapter</td>
+                        <td></td>
+                        <td>2023-May-29</td>
+                        <td>Adafruit</td>
+                        <td></td>
+                        <td></td>
+                        <td>$73.96</td>
+                        <td>Shipping and tax included.</td>
+                    </tr>
+                </tbody>
+                <tr>
+                    <th colspan="7" class="text-right">Total:</th>
+                    <td colspan="2">$364.73</td>
+                </tr>
+            </table>
+            <p><br/></p>
+        </div>
+
+		<footer class="footer border-top text-center p-4">
+			<div>&copy; 2023 - Beverly Yee & Alex Gray</div>
+		</footer>
+	</body>
+</html>
