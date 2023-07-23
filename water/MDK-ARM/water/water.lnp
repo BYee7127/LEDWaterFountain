@@ -3,7 +3,6 @@
 "water\main.o"
 "water\stm32f0xx_it.o"
 "water\stm32f0xx_hal_msp.o"
-"water\stm32f0xx_ll_usb.o"
 "water\stm32f0xx_hal_adc.o"
 "water\stm32f0xx_hal_adc_ex.o"
 "water\stm32f0xx_hal_rcc.o"
@@ -24,8 +23,6 @@
 "water\stm32f0xx_hal_tim.o"
 "water\stm32f0xx_hal_tim_ex.o"
 "water\stm32f0xx_hal_tsc.o"
-"water\stm32f0xx_hal_pcd.o"
-"water\stm32f0xx_hal_pcd_ex.o"
 "water\system_stm32f0xx.o"
 --strict --scatter "water\water.sct"
 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
