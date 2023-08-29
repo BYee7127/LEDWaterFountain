@@ -31,11 +31,19 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define neopixelZero 34
+#define neopizelOne 67
+
+#define numPixels 20
+#define DMABuffSize (numPixels*24)+1
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
-
+void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim)
+{
+  HAL_TIM_PWM_Stop_DMA(htim, TIM_CHANNEL_4);
+}
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
@@ -47,10 +55,10 @@ TIM_HandleTypeDef htim1;
 TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim3;
 TIM_HandleTypeDef htim14;
+TIM_HandleTypeDef htim15;
+DMA_HandleTypeDef hdma_tim1_ch4_trig_com;
 
 TSC_HandleTypeDef htsc;
-
-PCD_HandleTypeDef hpcd_USB_FS;
 
 /* USER CODE BEGIN PV */
 
@@ -59,14 +67,15 @@ PCD_HandleTypeDef hpcd_USB_FS;
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
+static void MX_DMA_Init(void);
 static void MX_SPI2_Init(void);
 static void MX_TSC_Init(void);
-static void MX_USB_PCD_Init(void);
 static void MX_ADC_Init(void);
 static void MX_TIM1_Init(void);
 static void MX_TIM14_Init(void);
 static void MX_TIM2_Init(void);
 static void MX_TIM3_Init(void);
+static void MX_TIM15_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -74,6 +83,28 @@ static void MX_TIM3_Init(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
+typedef union
+{
+  struct
+  {
+    uint8_t b;
+    uint8_t r;
+    uint8_t g;
+  } color;
+  uint32_t data;
+} PixelRGB_t;
+
+typedef union
+{
+  struct
+  {
+    uint8_t w;
+    uint8_t b;
+    uint8_t r;
+    uint8_t g;
+  } color;
+  uint32_t data;
+} PixelRGBW_t;
 /* USER CODE END 0 */
 
 /**
@@ -83,7 +114,11 @@ static void MX_TIM3_Init(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-
+	PixelRGB_t pixel[numPixels] = {0};
+  uint32_t dmaBuffer[DMABuffSize] = {0};
+  uint32_t *pBuff;
+  int i, j, k;
+  uint16_t stepSize;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -92,7 +127,6 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -104,15 +138,19 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_DMA_Init();
   MX_SPI2_Init();
   MX_TSC_Init();
-  MX_USB_PCD_Init();
   MX_ADC_Init();
   MX_TIM1_Init();
   MX_TIM14_Init();
   MX_TIM2_Init();
   MX_TIM3_Init();
+  MX_TIM15_Init();
   /* USER CODE BEGIN 2 */
+	
+	
+	
 	uint16_t readvalue;
 	
 	HAL_ADC_Start(&hadc);
@@ -133,6 +171,8 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+	k = 0;
+  stepSize = 4;
   while (1)
   {
     /* USER CODE END WHILE */
@@ -152,6 +192,59 @@ int main(void)
 		__HAL_TIM_SetCompare(&htim3, TIM_CHANNEL_2, readvalue);
 		__HAL_TIM_SetCompare(&htim3, TIM_CHANNEL_3, readvalue);
 		__HAL_TIM_SetCompare(&htim3, TIM_CHANNEL_4, readvalue);
+		
+		for (i = (numPixels - 1); i > 0; i--)
+    {
+      pixel[i].data = pixel[i-1].data;
+    }
+
+    if (k < 255)
+    {
+      pixel[0].color.g = 254 - k; //[254, 0]
+      pixel[0].color.r =  k + 1;  //[1, 255]
+      pixel[0].color.b = 0;
+    }
+    else if (k < 510)
+    {
+      pixel[0].color.g = 0;
+      pixel[0].color.r = 509 - k; //[254, 0]
+      pixel[0].color.b = k - 254; //[1, 255]
+      j++;
+    }
+    else if (k < 765)
+    {
+      pixel[0].color.g = k - 509; //[1, 255];
+      pixel[0].color.r = 0;
+      pixel[0].color.b = 764 - k; //[254, 0]
+    }
+    k = (k + stepSize) % 765;
+
+    // not so bright
+    pixel[0].color.g >>= 2;
+    pixel[0].color.r >>= 2;
+    pixel[0].color.b >>= 2;
+
+    pBuff = dmaBuffer;
+    for (i = 0; i < numPixels; i++)
+    {
+       for (j = 23; j >= 0; j--)
+       {
+         if ((pixel[i].data >> j) & 0x01)
+         {
+           *pBuff = neopizelOne;
+         }
+         else
+         {
+           *pBuff = neopixelZero;
+         }
+         pBuff++;
+     }
+    }
+    dmaBuffer[DMABuffSize - 1] = 0; // last element must be 0!
+
+    HAL_TIM_PWM_Start_DMA(&htim1, TIM_CHANNEL_4, dmaBuffer, DMABuffSize);
+
+    HAL_Delay(10);
   }
   /* USER CODE END 3 */
 }
@@ -164,15 +257,12 @@ void SystemClock_Config(void)
 {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
-  RCC_PeriphCLKInitTypeDef PeriphClkInit = {0};
 
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI|RCC_OSCILLATORTYPE_HSI14
-                              |RCC_OSCILLATORTYPE_HSI48;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI|RCC_OSCILLATORTYPE_HSI14;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
-  RCC_OscInitStruct.HSI48State = RCC_HSI48_ON;
   RCC_OscInitStruct.HSI14State = RCC_HSI14_ON;
   RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
   RCC_OscInitStruct.HSI14CalibrationValue = 16;
@@ -194,13 +284,6 @@ void SystemClock_Config(void)
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
 
   if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_1) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USB;
-  PeriphClkInit.UsbClockSelection = RCC_USBCLKSOURCE_HSI48;
-
-  if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
   {
     Error_Handler();
   }
@@ -323,7 +406,7 @@ static void MX_TIM1_Init(void)
   htim1.Instance = TIM1;
   htim1.Init.Prescaler = 0;
   htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim1.Init.Period = 4100;
+  htim1.Init.Period = 100;
   htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim1.Init.RepetitionCounter = 0;
   htim1.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
@@ -362,6 +445,10 @@ static void MX_TIM1_Init(void)
     Error_Handler();
   }
   if (HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_3) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  if (HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_4) != HAL_OK)
   {
     Error_Handler();
   }
@@ -572,6 +659,52 @@ static void MX_TIM14_Init(void)
 }
 
 /**
+  * @brief TIM15 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM15_Init(void)
+{
+
+  /* USER CODE BEGIN TIM15_Init 0 */
+
+  /* USER CODE END TIM15_Init 0 */
+
+  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM15_Init 1 */
+
+  /* USER CODE END TIM15_Init 1 */
+  htim15.Instance = TIM15;
+  htim15.Init.Prescaler = 0;
+  htim15.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim15.Init.Period = 65535;
+  htim15.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim15.Init.RepetitionCounter = 0;
+  htim15.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim15) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  if (HAL_TIM_ConfigClockSource(&htim15, &sClockSourceConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim15, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM15_Init 2 */
+
+  /* USER CODE END TIM15_Init 2 */
+
+}
+
+/**
   * @brief TSC Initialization Function
   * @param None
   * @retval None
@@ -615,34 +748,18 @@ static void MX_TSC_Init(void)
 }
 
 /**
-  * @brief USB Initialization Function
-  * @param None
-  * @retval None
+  * Enable DMA controller clock
   */
-static void MX_USB_PCD_Init(void)
+static void MX_DMA_Init(void)
 {
 
-  /* USER CODE BEGIN USB_Init 0 */
+  /* DMA controller clock enable */
+  __HAL_RCC_DMA1_CLK_ENABLE();
 
-  /* USER CODE END USB_Init 0 */
-
-  /* USER CODE BEGIN USB_Init 1 */
-
-  /* USER CODE END USB_Init 1 */
-  hpcd_USB_FS.Instance = USB;
-  hpcd_USB_FS.Init.dev_endpoints = 8;
-  hpcd_USB_FS.Init.speed = PCD_SPEED_FULL;
-  hpcd_USB_FS.Init.phy_itface = PCD_PHY_EMBEDDED;
-  hpcd_USB_FS.Init.low_power_enable = DISABLE;
-  hpcd_USB_FS.Init.lpm_enable = DISABLE;
-  hpcd_USB_FS.Init.battery_charging_enable = DISABLE;
-  if (HAL_PCD_Init(&hpcd_USB_FS) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN USB_Init 2 */
-
-  /* USER CODE END USB_Init 2 */
+  /* DMA interrupt init */
+  /* DMA1_Channel4_5_6_7_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Channel4_5_6_7_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Channel4_5_6_7_IRQn);
 
 }
 
