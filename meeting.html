@@ -52,6 +52,94 @@
 
         <div class="container">
             <h2>Meetings</h2>
+			2023-August-24
+			<ul>
+				<li>Finished using the Dremel on the tray.</li>
+				<li>Began mapping location of tubes on tray and distance from the edge for center hole.
+					<ul>
+						<li>This hole is for the water to fall back into.</li>
+					</ul>
+				</li>
+				<li>Will need to research 3D printing to see if making a stand is feasible.</li>
+				<li>Began looking into FFTs.
+					<ul>
+						<li>Start with base code and branch from there.</li>
+						<li>Likely will need a delay between input and output.</li>
+					</ul>
+				</li>
+				<li>Began sketches for possible final looks.</li>
+				<li>Acquired speakers for output.</li>
+			</ul>
+			
+			2023-August-22
+			<ul>
+				<li>Determined meetings with Professor - Thursdays @ 1:05-1:25p (1305-1325)</li>
+				<li>Cut LED strip to desired length and applied electronic-grade silicon to the end.
+					<ul>
+						<li>Currently untested, but should still work fine.</li>
+					</ul>
+				</li>
+				<li>Began using the Dremel on the tray to refine the edge.
+					<ul>
+						<li>Laser cutting left about 0.5cm edge.</li>
+						<li>Possible "risks" include catching and retaining water on edges when we don't want it to.</li>
+					</ul>
+				</li>
+			</ul>
+			
+			2023-August-7
+			<ul>
+				<li>Continued playing with LED light strip
+					<ul>
+						<li><a href="https://arduino.stackexchange.com/questions/10357/arduino-with-ws2812-using-adafruit-neopixel-library-fade-in-out-different-patter" target="_blank">
+							Base code
+						</a></li>
+						<li><a href="https://forum.arduino.cc/t/adafruit-neopixel-code-for-simple-brightness-fade/418170" target="_blank">
+							Code attempted
+						</a></li>
+					</ul>
+				</li>
+				<li>Added more silicone, this time between the wires and the edge of the tray.
+					<ul>
+						<li>Prevents the sheathing of the wire from rubbing against the edge and fraying.</li>
+						<ul>
+							<li>Shouldn't, since everything else is pretty well glued down.</li>
+						</ul>
+					</ul>
+				</li>
+				<li>Plan for using just the Arduino for everything.
+					<ul>
+						<li>Condenses code to one area.</li>
+						<li>More likely to find examples/help.</li>
+						<li>Code is a bit easier to write out than Verilog...</li>
+					</ul>
+				</li>
+			</ul>
+
+			2023-July-31
+			<ul>
+				<li>Attempted recreation of fade-in fade-out on an LED strip via Arduino Uno.
+					<ul>
+						<li><a href="https://adafruit.github.io/Adafruit_NeoPixel/html/class_adafruit___neo_pixel.html" target="_blank">NeoPixel documentation</a></li>
+					</ul>
+					<center><img src="images/LEDStripLightTest.jpg" height="500px" style="margin: 20px;"/></center>
+				</li>
+				<li>Attached pumps to buttom of tray with small hole cut out.
+					<ul>
+						<li>Settled for 12 pumps since the driver is for 12 and already finished.</li>
+						<li>Each pump is equally spaced with each other.</li>
+						<li>Each pump has, roughly, a half-inch space between the edge and its inlet for waterflow.</li>
+					</ul>
+					<center><img src="images/PumpsPositioned.jpg" height="500px" style="margin: 20px;"/>
+						<img src="images/PumpsPositions_TopView.jpg" height="500px" style="margin: 20px;"/></center>
+				</li>
+				<li>Started sealing the hole the wires are coming out of with silicone.
+					<ul>
+						<li>Mainly sealing the very center, in between the wires.</li>
+					</ul>
+				</li>
+			</ul>
+
 			2023-July-10
 			<ul>
 				<li>Re-soldered LED strip adapter to have another wire for ground to the circuit.
@@ -64,8 +152,12 @@
 					<ul>
 						<li>Is it possible to cut it?</li>
 						<li>Once it's cut, how to waterproof the end in case water splashes up where it shouldn't?</li>
-						<li><a href="https://forums.adafruit.com/viewtopic.php?p=978674#p978674">Answer!</a> Yay!</li>
+						<li><a href="https://forums.adafruit.com/viewtopic.php?p=978674#p978674" target="_blank">Answer!</a> Yay!</li>
 					</ul>
+				</li>
+				<li>
+					Laser cut two of the three trays:<br/>
+					<center><img src="images/CutOutTrays.jpg" height="500px" style="margin: 20px;"/></center>
 				</li>
 			</ul>
 
@@ -109,8 +201,8 @@
 					</ul>
 				</li>
 				<li>Soldered on resistors using heat gun and solder paste<br/>
-					<img src="images/ASolderedResistor" height="600px" /><br/>
-					<img src="images/PumpDriverwResistors" height="600px" />
+					<center><img src="images/ASolderedResistor.jpg" height="500px" style="margin: 20px;"/>
+						<img src="images/PumpDriverwResistors.jpg" height="500px" style="margin: 20px;"/></center>
 					<ul>
 						<li>use tweezers to apply a good enough amount of paste onto the pads</li>
 						<li>direct the heat gun over the component and keep it there until the solder bubbles and shrinks</li>
@@ -135,7 +227,7 @@
 				</li>
 				<li>NeoPixel silicon LED strip
 					<ul>
-						<li><a href="https://www.adafruit.com/product/3869">https://www.adafruit.com/product/3869</a></li>
+						<li><a href="https://www.adafruit.com/product/3869" target="_blank">https://www.adafruit.com/product/3869</a></li>
 						<li>Thicker version with standard trajectory for lighting</li>
 						<li>not ideal for dunking underwater or long term outdoor exposure</li>
 						<li>Durable enough for projects to survive the outdoors</li>
@@ -144,10 +236,10 @@
 			</ul>
 
 			2023-May-15<br/>
-			<img src="images/SolderedPumps" height="600px" />
 			<ul>
-				<li>
-					Soldered wires to the pump wires such that it'd be easier to attach them to the circuit board.				</li>
+				<li>Soldered wires to the pump wires such that it'd be easier to attach them to the circuit board.
+					<center><img src="images/SolderedPumps.jpg" height="500px" style="margin: 20px;" /></center>
+				</li>
 				<li>For security of the solder, added heat shrink tubing around the joint.</li>
 				<li>Fitted plastic tubing over outlet of the pumps.</li>
 				<li>Started looking into LED strlps again
