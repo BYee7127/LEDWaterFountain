@@ -52,9 +52,65 @@
 
         <div class="container">
             <h2>Meetings</h2>
+
+			2023-November-02
+			<ul>
+				<li>Goal for next week is to figure out what is wrong with the pumps and get them working.</li>
+				<li>Measured and cut out holders for the lid and glued them to the enclosure.</li>
+				<li>Trimmed and glued on the vinyl.</li>
+				<li>Figured out fade in/out for the LEDs.</li>
+				<li>Check-in with the Professor.</li>
+			</ul>
+
+			2023-October-31
+			<ul>
+				<li>Started the last prints for the enclosure - the dove tail joints and one last pin.</li>
+				<li>Found a logic level shifter to use for the LED.</li>
+				<li></li>
+			</ul>
+
+			2023-October-26
+			<ul>
+				<li>Discovered that the Teensy outputs 3.3v when the NeoPixel requires 5v logic.</li>
+				<li></li>
+			</ul>
+
+			2023-October-24
+			<ul>
+				<li>Finished one speaker print and screwed one speaker to it.
+					<ul>
+						<li>This speaker is the one with the power cord outlet in the back and the AUX hole.</li>
+						<li>Speaker hole is perfect fit.</li>
+						<li>Screw holes are a bit of a tight fight but works well.</li>
+					</ul>
+				</li>
+				<li>Test print of the service area.</li>
+				<li>Re-arranged pins again for the LED.</li>
+				<li>Testing pump pcp using the Teensy to make sure everything works.
+					<ul>
+						<li>The power supply we got for the pump pcp doesn't seem to be powerful enough for all the pumps together.</li>
+						<li>Otherwise, all pumps do work.</li>
+					</ul>
+				</li>
+			</ul>
+
 			2023-October-19
 			<ul>
-				<li></li>
+				<li>Printing another joint test before printing speaker box to make sure it fits before printing the entire thing.</li>
+				<li>Check-in meeting.</li>
+				<li>Decided to use PWM on the Teensy instead.
+					<ul>
+						<li>It contains 17 PWM pins, more than enough to support all the pumps.</li>
+					</ul>
+				</li>
+				<li>Glue the two pieces of the cover together.</li>
+				<li>Began print of the speaker box with the aux and power holes.</li>
+				<li>Re-soldered some of the pump wires to give more length.</li>
+				<li>Tested the LED strip with the Teensy 4.0 - so far no good.
+					<ul>
+						<li><a href="https://gist.github.com/chemdoc77/8b50f86d3bef8e777ccca62759efbd2f" target="_blank">Sketch of code to run the LED strip (WS2811/RGB chip)</a></li>
+					</ul>
+				</li>
 			</ul>
 
 			2023-October-17
@@ -87,13 +143,15 @@
 								<li>Initial test had the joint come out the same size for both sides of the joint.</li>
 							</ul>
 						</li>
-						<li>[] Change pin size to: 4.5mm.
+						<li>[&#10003;] Change pin size to: 4.5mm.
 							<ul>
 								<li>Intial print was a friction fit.</li>
 							</ul>
 						</li>
-						<li>[] Cut out holes for screws to speaker.</li>
-						<li>[] </li>
+						<li>[&#10003;] Cut out holes for screws to speaker.</li>
+						<li>[&#10003;] Cut out hole for AUX in one side of the speaker.</li>
+						<li>[&#10003;] Cut out space for service area to go into for the speaker.</li>
+						<li>[] Reduce size of the service area barrier</li>
 					</ul>
 				</li>
 			</ul>

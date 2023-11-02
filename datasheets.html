@@ -52,8 +52,29 @@
 
         <div class="container">
             <h2>Pinouts</h2>
+            <center>
+                <img src="images/teensy40_card10a_rev2.png" height="500px" style="margin: 20px;"/>
+                <img src="images/teensy40_card10b_rev2.png" height="500px" style="margin: 20px;"/>
+            </center>
             <ul>
+                <li>Pump driver -> Teensy
+                    <ul>
+                        <li>Pump 01 -> pin 12</li>
+                        <li>Pump 02 -> pin 11</li>
+                        <li>Pump 03 -> pin 10</li>
+                        <li>Pump 04 -> pin 09</li>
+                        <li>Pump 05 -> pin 08</li>
+                        <li>Pump 06 -> pin 06</li>
+                        <li>Pump 07 -> pin 05</li>
+                        <li>Pump 08 -> pin 04</li>
+                        <li>Pump 09 -> pin 03</li>
+                        <li>Pump 10 -> pin 02</li>
+                        <li>Pump 11 -> pin 01</li>
+                        <li>Pump 12 -> pin 00</li>
+                    </ul>
+                </li>
                 <li>16 & 17 (A2 & A3) = audio into the Teensy from the audio circuit</li>
+                <li>#7 PWM pin for the LED</li>
             </ul>
             <p><br/></p>
 
@@ -61,7 +82,11 @@
             The following list contains the datasheets to all parts used in the prototype and final product.
             <br/><br/>
             <ul>
+                <li><a href="https://www.pjrc.com/store/teensy40.html" target="_blank">Teensy 4.0 documentation</a></li>
+                <li><a href="https://www.pjrc.com/teensy/td_download.html" target="_blank">Integrate Teensy 4.0 with Arduino</a></li>
+                <li><a href="https://github.com/FastLED/FastLED/wiki/Parallel-Output" target="_blank">Parallel output on the Teensy 4.0</a> (needed for NeoPixel LED strip)</li>
                 <li><a href="https://adafruit.github.io/Adafruit_NeoPixel/html/class_adafruit___neo_pixel.html" target="_blank">NeoPixel documentation</a></li>
+                <li><a href="https://www.energy.gov/eere/amo/articles/optimize-parallel-pumping-systems#:~:text=Although%20parallel%20operation%20does%20increase,transfer%20a%20given%20fluid%20volume" target="_blank">Info on how pumps operate</a></li>
                 <li>
                     <a href="https://www.yageo.com/upload/media/product/productsearch/datasheet/rchip/PYu-RC_Group_51_RoHS_L_12.pdf" target="_blank" rel="noreferrer noopener">
                         Surface Mount Resistors
