@@ -9,7 +9,7 @@
 
 // ================ Teensy 4.0 Stuff ================
 // check the list of FastLED Parallel Output pins to get the correct one to use
-#define DATA_PIN 7
+#define DATA_PIN 20
 #define NUM_LEDS_PER_STRIP 14
 #define NUM_STRIPS 1
 #define NUM_LEDS NUM_LEDS_PER_STRIP
