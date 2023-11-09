@@ -20,18 +20,18 @@ CRGB leds[NUM_LEDS_PER_STRIP * NUM_STRIPS];
 // array of colors to use on the strip
 CRGB clist[10] = { CRGB::Red, CRGB::Lime, CRGB::Magenta, CRGB::Blue, CRGB::OrangeRed, CRGB::ForestGreen, CRGB::Crimson, CRGB::Gold, CRGB::Cyan, CRGB::White };
 
-// get the length of the color list
-int length = sizeof(clist) / sizeof(clist[0]);
+int length;
 
-CRGB previousColor;
-CRGB clear = CRGB::Black;
+CRGB previous, clear;
 
 /*
  * Setup the LED strip to be called by WaterFountainMain.setup();
  */
 void setupLED() {
-  // set previousColor to black
-  previousColor = CRGB::Black;
+  // get the length of the color list
+  length = sizeof(clist) / sizeof(clist[0]);
+  clear = CRGB::Black;
+  previous = clear;
 
   // add the LED strip
   FastLED.addLeds<NUM_STRIPS, WS2811, DATA_PIN, GRB>(leds, NUM_LEDS_PER_STRIP);
@@ -107,6 +107,7 @@ void breatheStatic(int index, int wait) {
     FastLED.delay(wait);
   };
 
+  // @TODO: instead of declaring a new variable, just do "b" and see what happens
   for (uint8_t b = 255; b > 0; b--) {
     fill_solid(leds, NUM_LEDS, clist[index]);
     FastLED.setBrightness(b);
@@ -117,11 +118,19 @@ void breatheStatic(int index, int wait) {
 }
 
 /*
+ * Each call to this function shows a different color.
+ * 
+ * params:    wait - how long to delay the function before continuing
+ */
+void breatheIntoNextColor() {
+}
+
+/*
  * Only do increments/decrements of ODD numbers.
  * Even numbers causes a weird flicker.
  */
-void breatheByIncrement(int index, int wait){
-  for (uint8_t b = 0; b < 255; b++) {
+void breatheByIncrement(int index, int wait, int steps) {
+  for (uint8_t b = 0; b < 255; b += steps) {
     fill_solid(leds, NUM_LEDS, clist[index]);
     FastLED.setBrightness(b);
 
@@ -129,7 +138,7 @@ void breatheByIncrement(int index, int wait){
     FastLED.delay(wait);
   };
 
-  for (uint8_t b = 255; b > 0; b--) {
+  for (uint8_t b = 255; b > 0; b -= steps) {
     fill_solid(leds, NUM_LEDS, clist[index]);
     FastLED.setBrightness(b);
 
@@ -143,13 +152,14 @@ void breatheByIncrement(int index, int wait){
  * But the next color is different from the previous color, if it has
  * been called previously.
  * 
+ * params:    wait - how long to delay the function before continuing
  */
 void showRandomColor(int wait) {
   // grab a random color
   CRGB current = clist[rand() % 10];
 
   // check if the current color is the same as the previous color
-  if (current == previousColor) {
+  if (current == previous) {
     current = clist[rand() % 10];
   }
 
@@ -158,11 +168,14 @@ void showRandomColor(int wait) {
   FastLED.delay(wait);
 
   // now set previous to current
-  previousColor = current;
+  previous = current;
 }
 
 /*
  * Incrementally fill the LED strip with a color then black
+ * 
+ * params:    index - number attached to a color in clist
+ *            wait - how long to delay the function before continuing
  */
 void incrementFillToBlackStatic(int index, int wait) {
   for (int i = 0; i < NUM_LEDS; i++) {
@@ -182,13 +195,15 @@ void incrementFillToBlackStatic(int index, int wait) {
 /*
  * Incrementally fill the LED strip with a color then black
  * Every call to this function has a different color
+ * 
+ * params:    wait - how long to delay the function before continuing
  */
 void incrementFillToBlackRandom(int wait) {
   // grab a random color
   CRGB current = clist[rand() % 10];
 
   // check if the current color is the same as the previous color
-  if (current == previousColor) {
+  if (current == previous) {
     current = clist[rand() % 10];
   }
 
@@ -206,12 +221,14 @@ void incrementFillToBlackRandom(int wait) {
   }
 
   // now set previous to current
-  previousColor = current;
+  previous = current;
 }
 
 /*
  * Each incremental LED is a different, random color.
  * Does not fill to black afterwards.
+ * 
+ * params:    wait - how long to delay the function before continuing
  */
 void incrementFillRandom(int wait) {
   // initialize just in case
@@ -232,8 +249,14 @@ void incrementFillRandom(int wait) {
   }
 }
 
+/*
+ * Only one LED is illuminated the entire time and runs across the strip.
+ * 
+ * params:    index - number attached to a color in clist
+ *            wait - how long to delay the function before continuing
+ */
 void singleColorWipeStatic(int index, int wait) {
-  for (int i = 0; i < NUM_LEDS; i++){
+  for (int i = 0; i < NUM_LEDS; i++) {
     leds[i] = clist[index];
     FastLED.delay(wait);
     leds[i] = clear;
@@ -241,3 +264,4 @@ void singleColorWipeStatic(int index, int wait) {
   }
 }
 
+// @TODO: create a helper function that outputs a color after checking if current =\= previous
