@@ -25,18 +25,26 @@ AudioInputAnalog adcR(A3);
 AudioMixer4 mixer1;
 AudioAmplifier amp1;
 AudioRecordQueue queue1;
-AudioAnalyzeFFT256 fft256_1;
+AudioAnalyzeFFT256 fft256;
 AudioConnection patchCord1(adcL, 0, mixer1, 0);
 AudioConnection patchCord2(adcR, 0, mixer1, 1);
 AudioConnection patchCord3(mixer1, amp1);
 AudioConnection patchCord4(amp1, queue1);
-AudioConnection patchCord5(amp1, fft256_1);
+AudioConnection patchCord5(amp1, fft256);
+
+static int array[];
 
 void setup() {
   setupLED();
 }
 
 void loop() {
+
+  if(fft256.available())
+  {
+    averageFFT();
+  }
+
   // lineUpTest();
   // cycleAllColors(1000);
   // breatheStatic(3, 5);
@@ -59,4 +67,32 @@ void loop() {
   // analogWrite(9, 255);   // pump 03
   // analogWrite(10, 255);  // pump 02
   // analogWrite(11, 255);  // pump 01
+}
+
+void averageFFT()
+{
+  for(int i=0; i<12; i++)
+  {
+    if(i=0)
+    {
+      array[i]=(fft256.output[0]+fft256.output[1]+fft256.output[2]+fft256.output[3]+
+               fft256.output[4]+fft256.output[5]+fft256.output[6]+fft256.output[7]+
+               fft256.output[8]+fft256.output[9]+fft256.output[10]+fft256.output[11]+
+               fft256.output[12]+fft256.output[13]+fft256.output[14]+fft256.output[15])/16;
+    }
+    else if(i=11)
+    {
+      array[i]=(fft256.output[112]+fft256.output[113]+fft256.output[114]+fft256.output[115]+
+                fft256.output[116]+fft256.output[117]+fft256.output[118]+fft256.output[119]+
+                fft256.output[120]+fft256.output[121]+fft256.output[122]+fft256.output[123]+
+                fft256.output[124]+fft256.output[125]+fft256.output[126]+fft256.output[127])/16;
+    }
+    else
+    {
+      array[i]=(fft256.output[0+(i+16)]+fft256.output[(1*i)+16]+fft256.output[(2*i)+16]+fft256.output[(3*i)+16]+
+               fft256.output[(4*i)+16}+fft256.output[(5*i)+16]+fft256.output[(6*i)+16]+fft256.output[(7*i)+16]+
+               fft256.output[(8*i)+16]+fft256.output[(9*i)+16]+fft256.output[(10*i)+16]+fft256.output[11*i)+16])/12;
+    }
+    array[i]=fft256;
+  }
 }
