@@ -43,9 +43,10 @@ void loop() {
   // showRandomColor(1000);
   // incrementFillToBlackStatic(2, 60);
   // incrementFillToBlackRandom(60);
-  incrementFillRandom(60);
-  // singleColorWipeStatic(8, 60);
-  // breatheStatic(7, 5);
+  // incrementFillRandom(60);
+  // singleColorWipeStatic(5, 60);
+  // doubleColorWipe(1,3,60);
+  fullColorWipe(60);
 
   // analogWrite(0, 255);   // pump 12
   // analogWrite(1, 255);   // pump 11

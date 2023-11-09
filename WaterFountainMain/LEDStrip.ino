@@ -48,31 +48,16 @@ void setupLED() {
  * params:    none
  */
 void lineUpTest() {
-  // int c = 0;
-  // for (int i = 0; i < NUM_LEDS; i++) {
-  //   // since the length of the color list is less than the number of LEDs we have
-  //   if (c >= length) {
-  //     c = 0;
-  //   }
+  int c = 0;
+  for (int i = 0; i < NUM_LEDS; i++) {
+    // since the length of the color list is less than the number of LEDs we have
+    if (c >= length) {
+      c = 0;
+    }
 
-  //   leds[i] = clist[c];
-  //   c++;
-  // }
-
-  leds[0] = CRGB::Red;
-  leds[1] = CRGB::Lime;
-  leds[2] = CRGB::Magenta;
-  leds[3] = CRGB::Blue;
-  leds[4] = CRGB::OrangeRed;
-  leds[5] = CRGB::ForestGreen;
-  leds[6] = CRGB::Crimson;
-  leds[7] = CRGB::Gold;
-  leds[8] = CRGB::Cyan;
-  leds[9] = CRGB::White;
-  leds[10] = CRGB::Red;
-  leds[11] = CRGB::Lime;
-  leds[12] = CRGB::Magenta;
-  leds[13] = CRGB::Blue;
+    leds[i] = clist[c];
+    c++;
+  }
 
   FastLED.show();
 }
@@ -263,5 +248,40 @@ void singleColorWipeStatic(int index, int wait) {
     FastLED.show();
   }
 }
+
+void doubleColorWipe(int index1, int index2, int wait) {
+  for (int i = 0; i < NUM_LEDS; i++) {
+    leds[i] = clist[index1];
+    leds[i - 1] = clist[index2];
+    FastLED.delay(wait);
+    leds[i - 1] = clear;
+    leds[i] = clear;
+    FastLED.show();
+  }
+}
+
+void fullColorWipe(int wait) {
+  int c = 0;
+  for (int i = 0; i < NUM_LEDS; i++) {
+    for (int j = 0; j < length; j++) {
+      leds[i - j] = clist[c];
+      if (c >= length){
+        c = 9;
+      }
+      c++;
+    }
+
+    FastLED.show();
+    FastLED.delay(wait);
+  }
+
+  // for (int i = 0; i < NUM_LEDS; i++) {
+  //   for (int j = length - 1; j >= 0; j++) {
+  //     leds[i - j] = CRGB::White;
+  //   }
+  //   FastLED.show();
+  // }
+}
+
 
 // @TODO: create a helper function that outputs a color after checking if current =\= previous
