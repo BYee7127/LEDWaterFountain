@@ -20,7 +20,12 @@ void setup() {
 }
 
 void loop() {
-  // lineUpTest();
-  // cycleAllColors(1000);
+  lineUpTest();
+  cycleAllColors(1000);
   breatheStatic(4, 5);
+  showRandomColor(1000);
+  incrementFillToBlackStatic(2, 60);
+  incrementFillToBlackRandom(60);
+  incrementFillRandom(60);
+  singleColorWipeStatic(8,60);
 }
