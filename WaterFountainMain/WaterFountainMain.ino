@@ -76,25 +76,25 @@ void averageFFT() //averages the 128 bins of fft down to 12 and places the value
   {
     if(i==0) //first bin averages over 14
     {
-      FFTarray[i]=(fft256.output[0]+fft256.output[1]+fft256.output[2]+fft256.output[3]+
-               fft256.output[4]+fft256.output[5]+fft256.output[6]+fft256.output[7]+
-               fft256.output[8]+fft256.output[9]+fft256.output[10]+fft256.output[11]+
-               fft256.output[12]+fft256.output[13])/14;
+      FFTarray[i]=(fft256.read(0)+fft256.read(1)+fft256.read(2)+fft256.read(3)+
+               fft256.read(4)+fft256.read(5)+fft256.read(6)+fft256.read(7)+
+               fft256.read(8)+fft256.read(9)+fft256.read(10)+fft256.read(11)+
+               fft256.read(12)+fft256.read(13))/14;
     }
     else if(i==11) //last bin averages over 14
     {
-      FFTarray[i]=(fft256.output[114]+fft256.output[115]+fft256.output[116]+fft256.output[117]+
-                fft256.output[118]+fft256.output[119]+fft256.output[120]+fft256.output[121]+
-                fft256.output[122]+fft256.output[123]+fft256.output[124]+fft256.output[125]+
-                fft256.output[126]+fft256.output[127])/14;
+      FFTarray[i]=(fft256.read(114)+fft256.read(115)+fft256.read(116)+fft256.read(117)+
+                fft256.read(118)+fft256.read(119)+fft256.read(120)+fft256.read(121)+
+                fft256.read(122)+fft256.read(123)+fft256.read(124)+fft256.read(125)+
+                fft256.read(126)+fft256.read(127))/14;
     }
     else //all other bins average over 10
     {
-      FFTarray[i]=(fft256.output[1+((i-1)*10)+13]+fft256.output[2+((i-1)*10)+13]+
-                fft256.output[3+((i-1)*10)+13]+fft256.output[4+((i-1)*10)+13]+
-                fft256.output[5+((i-1)*10)+13]+fft256.output[6+((i-1)*10)+13]+
-                fft256.output[7+((i-1)*10)+13]+fft256.output[8+((i-1)*10)+13]+
-                fft256.output[9+((i-1)*10)+13]+fft256.output[10+((i-1)*10)+13])/10;
+      FFTarray[i]=(fft256.read(1+((i-1)*10)+13)+fft256.read(2+((i-1)*10)+13)+
+                fft256.read(3+((i-1)*10)+13)+fft256.read(4+((i-1)*10)+13)+
+                fft256.read(5+((i-1)*10)+13)+fft256.read(6+((i-1)*10)+13)+
+                fft256.read(7+((i-1)*10)+13)+fft256.read(8+((i-1)*10)+13)+
+                fft256.read(9+((i-1)*10)+13)+fft256.read(10+((i-1)*10)+13))/10;
     }
   }
 }
