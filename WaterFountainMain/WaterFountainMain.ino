@@ -32,7 +32,7 @@ AudioConnection patchCord3(mixer1, amp1);
 AudioConnection patchCord4(amp1, queue1);
 AudioConnection patchCord5(amp1, fft256);
 
-static int FFTarray[12];
+static float FFTarray[12];
 
 void setup() {
   setupLED();
@@ -40,9 +40,14 @@ void setup() {
 
 void loop() {
 
-  if(fft256.available())
+  if(fft256.available()) //verify fft has output data
   {
     averageFFT();
+    for(int i=0;i<12;i++) //test fft results (12 numbers, each should be a float between 0 and 1)
+    {
+      Serial.print(FFTarray[i]+" "); 
+      Serial.println(); //new line
+    }
   }
 
   // lineUpTest();
