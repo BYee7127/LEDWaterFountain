@@ -52,6 +52,57 @@
 
         <div class="container">
             <h2>Meetings</h2>
+			2023-November-21
+			<ul>
+				<li>Testing pumps with new power supply -- IT WORKS!!!!!!!!!</li>
+				<li>Testing LEDs with new power supply -- IT WORKS.
+					<ul>
+						<li>Logic shifter needs a wire connecting 3.3V power to pin OE to enable it.</li>
+						<li>Output to the LED comes out from pin B8.</li>
+						<li>Input from the Teensy comes in from pin A8.
+							<ul>
+								<li>This wire was shifted from A8 to OE, which initially caused the NeoPixel not to work.</li>
+							</ul>
+						</li>
+					</ul>
+				</li>
+				<li>Testing pumps and LEDs at the same time - IT WORKS
+				</li>
+				<li>More FFT work 
+					<ul>
+						<li>Need to adjust clock speed to 96MHz (recommended in Teensy documentation)
+							<ul>
+								<li>
+									<a href="https://forum.pjrc.com/index.php?threads/how-to-change-clock-speed-on-teensy-4-0.57444/" target="_blank">Solution</a>
+								</li>
+								<li>Add following code to sketch:
+									<pre>
+// outside and above setup
+#if defined(__IMXRT1062__)
+extern "C" uint32_t set_arm_clock(uint32_t frequency);
+#endif
+
+// inside setup
+#if defined(__IMXRT1062__)
+  set_arm_clock(24000000);
+  Serial.print("F_CPU_ACTUAL=");
+  Serial.println(F_CPU_ACTUAL);
+#endif</pre>
+								</li>
+							</ul>
+						</li>
+						<li>FFT available function is returning false all the time.</li>
+					</ul>
+				</li>
+			</ul>
+
+			2023-November-16
+			<ul>
+				<li>Presentations</li>
+			</ul>
+
+			2023-November-14
+			<ul></ul>
 
 			2023-November-02
 			<ul>
