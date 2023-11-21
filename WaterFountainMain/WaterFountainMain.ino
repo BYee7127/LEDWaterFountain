@@ -73,6 +73,15 @@ void loop() {
   // doubleColorWipe(1,3,60);
   //fullColorWipe(60);
 
+  pumpsOff();
+  // pumpsHigh();
+
+}
+
+/*
+ * Turns off all the pumps. Essential if we want to test things without the pumps running.
+ */
+void pumpsOff() {
   analogWrite(0, 0);   // pump 12
   analogWrite(1, 0);   // pump 11
   analogWrite(2, 0);   // pump 10
@@ -85,21 +94,31 @@ void loop() {
   analogWrite(9, 0);   // pump 03
   analogWrite(10, 0);  // pump 02
   analogWrite(11, 0);  // pump 01
-
-  // analogWrite(0, 220);   // pump 12
-  // analogWrite(1, 255);   // pump 11
-  // analogWrite(2, 245);   // pump 10
-  // analogWrite(3, 245);   // pump 09
-  // analogWrite(4, 225);   // pump 08
-  // analogWrite(5, 255);   // pump 07
-  // analogWrite(6, 220);   // pump 06
-  // analogWrite(7, 245);   // pump 05
-  // analogWrite(8, 235);   // pump 04
-  // analogWrite(9, 255);   // pump 03
-  // analogWrite(10, 255);  // pump 02
-  // analogWrite(11, 220);  // pump 01
 }
 
+/*
+ * Sets the max values of all pumps to the pump with the lowest height on the max value.
+ * 
+ */
+void pumpsHigh() {
+  analogWrite(0, 220);   // pump 12
+  analogWrite(1, 255);   // pump 11
+  analogWrite(2, 245);   // pump 10
+  analogWrite(3, 245);   // pump 09
+  analogWrite(4, 225);   // pump 08
+  analogWrite(5, 255);   // pump 07
+  analogWrite(6, 220);   // pump 06
+  analogWrite(7, 245);   // pump 05
+  analogWrite(8, 235);   // pump 04
+  analogWrite(9, 255);   // pump 03
+  analogWrite(10, 255);  // pump 02
+  analogWrite(11, 220);  // pump 01
+}
+
+/*
+ * Averages the 128 bins in the FFT to 12 and places the values into FFTarrary[] for the pumps
+ * to access. This may not be ideal since all bins will be used?
+ */
 void averageFFT()  //averages the 128 bins of fft down to 12 and places the values in FFTarray[]
 {
   for (int i = 0; i < 12; i++) {
