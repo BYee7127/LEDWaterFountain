@@ -34,6 +34,7 @@ AudioConnection patchCord5(amp1, fft256);
 
 static float FFTarray[12];
 
+
 #if defined(__IMXRT1062__)
 extern "C" uint32_t set_arm_clock(uint32_t frequency);
 #endif
@@ -47,7 +48,7 @@ void setup() {
   Serial.println(F_CPU_ACTUAL);
 #endif
   setupLED();
-  amp1.gain(100.0);
+  amp1.gain(50.0);
 }
 
 void loop() {
@@ -122,17 +123,17 @@ void pumpsHigh() {
 void averageFFT()  //averages the 128 bins of fft down to 12 and places the values in FFTarray[]
 {
   for (int i = 0; i < 12; i++) {
-    if (i == 0)  //first bin averages over 14
+    if (i == 0)  //first bin averages over 2 for the lowest frequencies (0 hz - 172 hz | bass frequencies)
     {
-      FFTarray[i] = fft256.read(0,13) / 14;
+      FFTarray[i] = fft256.read(0,1)/2;
     } 
-    else if (i == 11)  //last bin averages over 14
+    else if (i == 11)  //last bin averages over 12 for all the higher end frequencies (2 Khz - 3.8 khz | upper mid range frequencies)
     {
-      FFTarray[i] = fft256.read(114,127)/14;
+      FFTarray[i] = fft256.read(12,24)/12;
     } 
-    else  //all other bins average over 10
+    else  //all other bins from 2-10 are not averaged (low to mid range frequencies)
     {
-      FFTarray[i] = fft256.read((1+((i-1)*10)+13),(10+((i-1)*10)+13))/10;
+      FFTarray[i] = fft256.read((i-1)+2);
     }
   }
 }
