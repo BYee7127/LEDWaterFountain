@@ -34,7 +34,6 @@ AudioConnection patchCord5(amp1, fft256);
 
 static float FFTarray[12];
 
-
 #if defined(__IMXRT1062__)
 extern "C" uint32_t set_arm_clock(uint32_t frequency);
 #endif
@@ -49,6 +48,7 @@ void setup() {
 #endif
   setupLED();
   amp1.gain(50.0);
+  pumpsOff();
 }
 
 void loop() {
@@ -59,6 +59,14 @@ void loop() {
     {
       Serial.print((double)FFTarray[i],3);
       Serial.print(" ");
+      if(FFTarray[i]<0.10)
+      {
+        setPump(i,0);
+      }
+      else
+      {
+        setPump(i,FFTarray[i]);
+      }
     }
     Serial.println();  //new line
   }
@@ -74,9 +82,169 @@ void loop() {
   // doubleColorWipe(1,3,60);
   //fullColorWipe(60);
 
-  pumpsOff();
+  // pumpsOff();
   // pumpsHigh();
 
+}
+
+void setPump(int pump, float val)
+{
+  float newVal;
+    if(pump == 0) //pump12
+    {
+      if(FFTarray[pump]<0.10)
+      {
+        analogWrite(pump, 0);
+      }
+      else 
+      {
+        newVal=(val*1.5)*70+150;
+        analogWrite(pump, newVal);
+      }
+    }
+
+    if(pump == 1) //pump11
+    {
+      if(FFTarray[pump]<0.10)
+      {
+        analogWrite(pump, 0);
+      }
+      else 
+      {
+        newVal=(val*2)*55+200;
+        analogWrite(pump, newVal);
+      }
+    }
+
+    if(pump == 2) //pump10
+    {
+      if(FFTarray[pump]<0.10)
+      {
+        analogWrite(pump, 0);
+      }
+      else 
+      {
+        newVal=(val*2)*55+190;
+        analogWrite(pump, newVal);
+      }
+    }
+
+    if(pump == 3) //pump9
+    {
+      if(FFTarray[pump]<0.10)
+      {
+        analogWrite(pump, 0);
+      }
+      else 
+      {
+        newVal=(val*3)*70+175;
+        analogWrite(pump, newVal);
+      }
+    }
+
+    if(pump == 4) //pump8
+    {
+      if(FFTarray[pump]<0.10)
+      {
+        analogWrite(pump, 0);
+      }
+      else 
+      {
+        newVal=(val*2)*65+160;
+        analogWrite(pump, newVal);
+      }
+    }
+
+    if(pump == 5) //pump7
+    {
+      if(FFTarray[pump]<0.10)
+      {
+        analogWrite(pump, 0);
+      }
+      else 
+      {
+        newVal=(val*4)*40+205;
+        analogWrite(pump, newVal);
+      }
+    }
+
+    if(pump == 6) //pump6
+    {
+      if(FFTarray[pump]<0.08)
+      {
+        analogWrite(pump, 0);
+      }
+      else 
+      {
+        newVal=(val*6)*60+180;
+        analogWrite(pump, newVal);
+      }
+    }
+
+    if(pump == 7) //pump5
+    {
+      if(FFTarray[pump]<0.08)
+      {
+        analogWrite(pump, 0);
+      }
+      else 
+      {
+        newVal=(val*8)*65+180;
+        analogWrite(pump, newVal);
+      }
+    }
+
+    if(pump == 8) //pump4
+    {
+      if(FFTarray[pump]<0.07)
+      {
+        analogWrite(pump, 0);
+      }
+      else 
+      {
+        newVal=(val*12)*50+185;
+        analogWrite(pump, newVal);
+      }
+    }
+
+    if(pump == 9) //pump3
+    {
+      if(FFTarray[pump]<0.10)
+      {
+        analogWrite(pump, 0);
+      }
+      else 
+      {
+        newVal=(val*2)*70+170;
+        analogWrite(pump, newVal);
+      }
+    }
+
+    if(pump == 10) //pump2
+    {
+      if(FFTarray[pump]<0.06)
+      {
+        analogWrite(pump, 0);
+      }
+      else 
+      {
+        newVal=(val*12)*55+200;
+        analogWrite(pump, newVal);
+      }
+    }
+
+    if(pump == 11) //pump1
+    {
+      if(FFTarray[pump]<0.04)
+      {
+        analogWrite(pump, 0);
+      }
+      else 
+      {
+        newVal=(val*20)*90+130;
+        analogWrite(pump, newVal);
+      }
+    }
 }
 
 /*
@@ -111,7 +279,7 @@ void pumpsHigh() {
   analogWrite(6, 220);   // pump 06
   analogWrite(7, 245);   // pump 05
   analogWrite(8, 235);   // pump 04
-  analogWrite(9, 255);   // pump 03
+  analogWrite(9, 225);   // pump 03
   analogWrite(10, 255);  // pump 02
   analogWrite(11, 220);  // pump 01
 }
