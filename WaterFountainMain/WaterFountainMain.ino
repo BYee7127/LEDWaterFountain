@@ -40,13 +40,12 @@ extern "C" uint32_t set_arm_clock(uint32_t frequency);
 
 void setup() {
   Serial.begin(9600);
-  AudioMemory(12);
+  AudioMemory(13);
   #if defined(__IMXRT1062__)
     set_arm_clock(600000000);
   #endif
   setupLED();
   amp1.gain(50.0);
-  pumpsOff();
 }
 
 void loop() {
@@ -62,7 +61,7 @@ void loop() {
     Serial.println();  //new line
   }
 
-  // lineUpTest();
+  lineUpTest();
   // cycleAllColors(1000);
   // breatheStatic(3, 5);
   // showRandomColor(1000);
@@ -71,7 +70,8 @@ void loop() {
   // incrementFillRandom(60);
   // singleColorWipeStatic(5, 60);
   // doubleColorWipe(1,3,60);
-  //fullColorWipe(60);
+  // fullColorWipe(60);
+  // cycleAllPatterns();
 
   // pumpsOff();
   // pumpsHigh();
@@ -92,7 +92,7 @@ void setPump(int pump, float val)
     }
     else 
     {
-      newVal=(val*1.5)*70+150;
+      newVal=(val)*70+150;
       analogWrite(pump, newVal);
     }
   }
@@ -285,17 +285,13 @@ void pumpsHigh() {
 void averageFFT() 
 {
   for (int i = 0; i < 12; i++) {
-    if (i == 0)  //first bin averages over 2 for the lowest frequencies (0 hz - 172 hz | bass frequencies)
+    if (i == 11)  //last bin averages over 12 for all the higher end frequencies (2 Khz - 3.8 khz | upper mid range frequencies)
     {
-      FFTarray[i] = fft256.read(0,1)/2;
+      FFTarray[i] = fft256.read(11,24)/13;
     } 
-    else if (i == 11)  //last bin averages over 12 for all the higher end frequencies (2 Khz - 3.8 khz | upper mid range frequencies)
+    else  //all other bins from 0-10 are not averaged (344 hz - 1.9 Khz | low to mid range frequencies)
     {
-      FFTarray[i] = fft256.read(12,24)/12;
-    } 
-    else  //all other bins from 2-10 are not averaged (344 hz - 1.9 Khz | low to mid range frequencies)
-    {
-      FFTarray[i] = fft256.read((i-1)+2);
+      FFTarray[i] = fft256.read((i-1)+1);
     }
   }
 }
