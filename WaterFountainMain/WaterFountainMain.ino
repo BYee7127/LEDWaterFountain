@@ -23,7 +23,7 @@
 AudioInputAnalog adcL(A2);
 AudioInputAnalog adcR(A3);
 AudioMixer4 mixer1;
-AudioAmplifier amp1;       
+AudioAmplifier amp1;
 AudioRecordQueue queue1;
 AudioAnalyzeFFT256 fft256;
 AudioConnection patchCord1(adcL, 0, mixer1, 0);
@@ -41,27 +41,27 @@ extern "C" uint32_t set_arm_clock(uint32_t frequency);
 void setup() {
   Serial.begin(9600);
   AudioMemory(13);
-  #if defined(__IMXRT1062__)
-    set_arm_clock(600000000);
-  #endif
+#if defined(__IMXRT1062__)
+  set_arm_clock(600000000);
+#endif
   setupLED();
-  amp1.gain(50.0);
+  amp1.gain(35.0);
 }
 
 void loop() {
   if (fft256.available())  //verify fft has output data
   {
     averageFFT();
-    for (int i = 0; i < 12; i++) //for every fft bin set the pump
+    for (int i = 0; i < 12; i++)  //for every fft bin set the pump
     {
-      Serial.print((double)FFTarray[i],3); //print fft bin for testing
-      Serial.print(" ");
-      setPump(i,FFTarray[i]);
+      // Serial.print((double)FFTarray[i], 3);  //print fft bin for testing
+      // Serial.print(" ");
+      setPump(i, FFTarray[i]);
     }
-    Serial.println();  //new line
+    // Serial.println();  //new line
   }
 
-  lineUpTest();
+  // lineUpTest();
   // cycleAllColors(1000);
   // breatheStatic(3, 5);
   // showRandomColor(1000);
@@ -71,171 +71,134 @@ void loop() {
   // singleColorWipeStatic(5, 60);
   // doubleColorWipe(1,3,60);
   // fullColorWipe(60);
-  // cycleAllPatterns();
+  cycleAllPatterns();
 
   // pumpsOff();
   // pumpsHigh();
-
 }
 
 /*
  * Sets given pump based on value from FFT
  */
-void setPump(int pump, float val)
-{
+void setPump(int pump, float val) {
   float newVal;
-  if(pump == 0) //pump12
+  if (pump == 0)  //pump12
   {
-    if(FFTarray[pump]<0.10) //lower threshold
+    if (FFTarray[pump] < 0.10)  //lower threshold
     {
       analogWrite(pump, 0);
-    }
-    else 
-    {
-      newVal=(val)*70+150;
+    } else {
+      newVal = (val)*70 + 125;
       analogWrite(pump, newVal);
     }
   }
 
-  if(pump == 1) //pump11
+  if (pump == 1)  //pump11
   {
-    if(FFTarray[pump]<0.10)
-    {
+    if (FFTarray[pump] < 0.10) {
       analogWrite(pump, 0);
-    }
-    else 
-    {
-      newVal=(val*2)*55+200;
+    } else {
+      newVal = (val * 2) * 55 + 175;
       analogWrite(pump, newVal);
     }
   }
 
-  if(pump == 2) //pump10
+  if (pump == 2)  //pump10
   {
-    if(FFTarray[pump]<0.10)
-    {
+    if (FFTarray[pump] < 0.10) {
       analogWrite(pump, 0);
-    }
-    else 
-    {
-      newVal=(val*2)*55+190;
-      analogWrite(pump, newVal);
-    }
-  }
-  
-  if(pump == 3) //pump9
-  {
-    if(FFTarray[pump]<0.10)
-    {
-      analogWrite(pump, 0);
-    }
-    else 
-    {
-      newVal=(val*3)*70+175;
+    } else {
+      newVal = (val * 2) * 55 + 190;
       analogWrite(pump, newVal);
     }
   }
 
-  if(pump == 4) //pump8
+  if (pump == 3)  //pump9
   {
-    if(FFTarray[pump]<0.10)
-    {
+    if (FFTarray[pump] < 0.10) {
       analogWrite(pump, 0);
-    }
-    else 
-    {
-      newVal=(val*2)*65+160;
+    } else {
+      newVal = (val * 3) * 70 + 175;
       analogWrite(pump, newVal);
     }
   }
 
-  if(pump == 5) //pump7
+  if (pump == 4)  //pump8
   {
-    if(FFTarray[pump]<0.10)
-    {
+    if (FFTarray[pump] < 0.10) {
       analogWrite(pump, 0);
-    }
-    else 
-    {
-      newVal=(val*4)*40+205;
+    } else {
+      newVal = (val * 2) * 65 + 160;
       analogWrite(pump, newVal);
     }
   }
 
-  if(pump == 6) //pump6
+  if (pump == 5)  //pump7
   {
-    if(FFTarray[pump]<0.08)
-    {
+    if (FFTarray[pump] < 0.10) {
       analogWrite(pump, 0);
-    }
-    else 
-    {
-      newVal=(val*6)*60+180;
+    } else {
+      newVal = (val * 4) * 40 + 205;
       analogWrite(pump, newVal);
     }
   }
 
-  if(pump == 7) //pump5
+  if (pump == 6)  //pump6
   {
-    if(FFTarray[pump]<0.08)
-    {
+    if (FFTarray[pump] < 0.08) {
       analogWrite(pump, 0);
-    }
-    else 
-    {
-      newVal=(val*8)*65+180;
+    } else {
+      newVal = (val * 6) * 60 + 180;
       analogWrite(pump, newVal);
     }
   }
 
-  if(pump == 8) //pump4
+  if (pump == 7)  //pump5
   {
-    if(FFTarray[pump]<0.07)
-    {
+    if (FFTarray[pump] < 0.08) {
       analogWrite(pump, 0);
-    }
-    else 
-    {
-      newVal=(val*12)*50+185;
+    } else {
+      newVal = (val * 8) * 65 + 180;
       analogWrite(pump, newVal);
     }
   }
 
-  if(pump == 9) //pump3
+  if (pump == 8)  //pump4
   {
-    if(FFTarray[pump]<0.10)
-    {
+    if (FFTarray[pump] < 0.07) {
       analogWrite(pump, 0);
-    }
-    else 
-    {
-      newVal=(val*2)*70+170;
+    } else {
+      newVal = (val * 12) * 50 + 185;
       analogWrite(pump, newVal);
     }
   }
 
-  if(pump == 10) //pump2
+  if (pump == 9)  //pump3
   {
-    if(FFTarray[pump]<0.06)
-    {
+    if (FFTarray[pump] < 0.10) {
       analogWrite(pump, 0);
-    }
-    else 
-    {
-      newVal=(val*12)*55+200;
+    } else {
+      newVal = (val * 2) * 70 + 170;
       analogWrite(pump, newVal);
     }
   }
 
-  if(pump == 11) //pump1
+  if (pump == 10)  //pump2
   {
-    if(FFTarray[pump]<0.04)
-    {
+    if (FFTarray[pump] < 0.06) {
       analogWrite(pump, 0);
+    } else {
+      newVal = (val * 12) * 55 + 200;
+      analogWrite(pump, newVal);
     }
-    else 
-    {
-      newVal=(val*20)*90+130;
+  }
+
+  if (pump == 11)  //pump1
+  {
+    if (FFTarray[pump] < 0.04) {
+      analogWrite(pump, 0);
+    } else {
+      newVal = (val * 20) * 90 + 130;
       analogWrite(pump, newVal);
     }
   }
@@ -282,16 +245,14 @@ void pumpsHigh() {
  * Averages the first 24 out of 128 bins in the FFT to 12 and places the values into FFTarrary[] for the pumps
  * to access.
  */
-void averageFFT() 
-{
+void averageFFT() {
   for (int i = 0; i < 12; i++) {
     if (i == 11)  //last bin averages over 12 for all the higher end frequencies (2 Khz - 3.8 khz | upper mid range frequencies)
     {
-      FFTarray[i] = fft256.read(11,24)/13;
-    } 
-    else  //all other bins from 0-10 are not averaged (344 hz - 1.9 Khz | low to mid range frequencies)
+      FFTarray[i] = fft256.read(11, 24) / 13;
+    } else  //all other bins from 0-10 are not averaged (344 hz - 1.9 Khz | low to mid range frequencies)
     {
-      FFTarray[i] = fft256.read((i-1)+1);
+      FFTarray[i] = fft256.read((i - 1) + 1);
     }
   }
 }
