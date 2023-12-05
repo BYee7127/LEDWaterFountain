@@ -224,7 +224,7 @@ void pumpsOff() {
 
 /*
  * Sets the max values of all pumps to the pump with the lowest height on the max value.
- * 
+ * for testing pumps
  */
 void pumpsHigh() {
   analogWrite(0, 220);   // pump 12
@@ -242,15 +242,20 @@ void pumpsHigh() {
 }
 
 /*
- * Averages the first 24 out of 128 bins in the FFT to 12 and places the values into FFTarrary[] for the pumps
+ * Averages the first 36 out of 128 bins in the FFT to 12 and places the values into FFTarrary[] for the pumps
  * to access.
  */
 void averageFFT() {
   for (int i = 0; i < 12; i++) {
-    if (i == 11)  //last bin averages over 12 for all the higher end frequencies (2 Khz - 3.8 khz | upper mid range frequencies)
+    if (i == 11)  // (4 Khz - 6 khz | presence range of frequencies)
     {
-      FFTarray[i] = fft256.read(11, 24) / 13;
-    } else  //all other bins from 0-10 are not averaged (344 hz - 1.9 Khz | low to mid range frequencies)
+      FFTarray[i] = fft256.read(23, 35) / 12;
+    } 
+    else if (i == 10) //(2 Khz - 3.8 khz | upper mid range frequencies)
+    {
+      FFTarray[i] = fft256.read(10, 22) / 12;
+    }
+    else  //all other bins from 0-10 are not averaged (344 hz - 1.9 Khz | low to mid range frequencies)
     {
       FFTarray[i] = fft256.read((i - 1) + 1);
     }
