@@ -41,9 +41,9 @@ extern "C" uint32_t set_arm_clock(uint32_t frequency);
 void setup() {
   Serial.begin(9600);
   AudioMemory(13);
-#if defined(__IMXRT1062__)
-  set_arm_clock(600000000);
-#endif
+  #if defined(__IMXRT1062__)
+    set_arm_clock(600000000);
+  #endif
   setupLED();
   amp1.gain(35.0);
 }
@@ -188,14 +188,14 @@ void setPump(int pump, float val) {
     if (FFTarray[pump] < 0.06) {
       analogWrite(pump, 0);
     } else {
-      newVal = (val * 12) * 55 + 200;
+      newVal = (val * 8) * 55 + 200;
       analogWrite(pump, newVal);
     }
   }
 
   if (pump == 11)  //pump1
   {
-    if (FFTarray[pump] < 0.04) {
+    if (FFTarray[pump] < 0.06) {
       analogWrite(pump, 0);
     } else {
       newVal = (val * 20) * 90 + 130;
@@ -249,12 +249,8 @@ void averageFFT() {
   for (int i = 0; i < 12; i++) {
     if (i == 11)  // (4 Khz - 6 khz | presence range of frequencies)
     {
-      FFTarray[i] = fft256.read(23, 35) / 12;
+      FFTarray[i] = fft256.read(10, 23) / 12;
     } 
-    else if (i == 10) //(2 Khz - 3.8 khz | upper mid range frequencies)
-    {
-      FFTarray[i] = fft256.read(10, 22) / 12;
-    }
     else  //all other bins from 0-10 are not averaged (344 hz - 1.9 Khz | low to mid range frequencies)
     {
       FFTarray[i] = fft256.read((i - 1) + 1);
