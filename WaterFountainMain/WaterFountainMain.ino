@@ -62,16 +62,19 @@ void loop() {
   }
 
   // lineUpTest();
-  // cycleAllColors(1000);
-  // breatheStatic(3, 5);
-  // showRandomColor(1000);
-  // incrementFillToBlackStatic(2, 60);
+  // cycleAllColors(800);
+  // fadeInOut(8);
+  // fadeInOut(8, 5);
+  // showSingleFill(1000);
+  // showSolid(7);
+  incrementFillToBlack(60);
+
   // incrementFillToBlackRandom(60);
   // incrementFillRandom(60);
   // singleColorWipeStatic(5, 60);
   // doubleColorWipe(1,3,60);
   // fullColorWipe(60);
-  cycleAllPatterns();
+  // cycleAllPatterns();
 
   // pumpsOff();
   // pumpsHigh();
@@ -185,7 +188,7 @@ void setPump(int pump, float val) {
 
   if (pump == 10)  //pump2
   {
-    if (FFTarray[pump] < 0.06) {
+    if (FFTarray[pump] < 0.1) {
       analogWrite(pump, 0);
     } else {
       newVal = (val * 8) * 55 + 200;
