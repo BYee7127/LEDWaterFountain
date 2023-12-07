@@ -37,15 +37,12 @@ int incrementFillDelay, incrementFillLength, incrementFillEnd, incrementFillCoun
 int incrementColorLength, incrementColorEnd, incrementColorCount;
 int wipeDelay, wipeEnd, wipeCount, wipeLength;
 int chaseDelay, chaseLength, chaseCount, chaseColor, chaseEnd;
-int cycleDelay, cycleRainbowEnd;
+int cycleDelay, cycleRainbowEnd, cycleStripEnd;
 
 bool fadeOutYN, showColor, switchLED;
 
-static float colorIndexFull = 0.25;
-
 // master items - DO NOT CHANGE
 int delayCount, colorNum, LEDNum, counter, iterateCount;
-
 
 
 /*
@@ -141,6 +138,7 @@ void resetCounts() {
   wipeEnd = 0;
   chaseEnd = 0;
   cycleRainbowEnd = 0;
+  cycleStripEnd = 0;
 
   // this one may not matter, but good for initialization
   switchLED = true;
@@ -203,8 +201,18 @@ void cycleAllPatterns() {
     delayCount = 0;
     cycleRainbowEnd = chaseEnd + cycleDelay;
   } else if(chaseEnd < counter && counter < cycleRainbowEnd) {
+    static float startIndex = 0;
+    startIndex = startIndex + 0.25;
     // full strip blend into next color, rainbow style
-    fillCycle(colorIndexFull);
+    fillCycle(startIndex);
+  } else if(counter == cycleRainbowEnd){
+    // SETUP filCylce -> fillRainbowCylcle
+    cycleStripEnd = cycleRainbowEnd + cycleDelay;
+  } else if(cycleRainbowEnd < counter && counter < cycleStripEnd){
+    static float startIndex = 0;
+    startIndex = startIndex + 0.5;
+    // individual blend into color rainbow
+    fillRainbowCycle(startIndex);
   }
   // reset everything
   else {
@@ -566,12 +574,7 @@ void singleColorWipe(int wait) {
  * Goes through the colors of the rainbow.
  */
 void fillCycle(uint8_t colorIndex) {
-  // for (int i = 0; i < NUM_LEDS_PER_STRIP; i++) {
-  //   leds[i] = ColorFromPalette(RainbowColors_p, colorIndex, 255, LINEARBLEND);
-  // }
-
   fill_solid(leds, NUM_LEDS, ColorFromPalette(RainbowColors_p, colorIndex, 255, LINEARBLEND));
-
   FastLED.show();
 }
 
@@ -579,8 +582,7 @@ void fillCycle(uint8_t colorIndex) {
  * The entire strip is colored as a rainbow with each color blending into the next.
  * At the same time, the rainbow moves along the strip.
  */
-void fillRainbowCycle() {
-  float colorIndex = 0.5;
+void fillRainbowCycle(uint8_t colorIndex) {
   for (int i = 0; i < NUM_LEDS_PER_STRIP; i++) {
     leds[i] = ColorFromPalette(RainbowColors_p, colorIndex, 255, LINEARBLEND);
     colorIndex += STEPS;
