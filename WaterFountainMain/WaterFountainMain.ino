@@ -89,19 +89,17 @@ void loop() {
   // fadeInOut(8, 5);
   // showSingleFill(1000);
   // showSolid(7);
-  // incrementFillToBlack(60);
   // incrementFillToBlack(60, 2);
+  // incrementFillToBlack(60);
   // incrementColorFill(60);
-  // singleColorWipe(1, 60);
+  // singleColorWipe(1, 30);
+  // singleColorWipe(30);
+  // chase(8);
+  // chaseRandom();
+  cycleAllPatterns();
 
-  // incrementFillToBlackRandom(60);
-  // incrementFillRandom(60);
-  // singleColorWipeStatic(5, 60);
   // doubleColorWipe(1,3,60);
   // fullColorWipe(60);
-  // cycleAllPatterns();
-  // chase(8);
-  chaseRandom();
 
   // pumpsOff();
   // pumpsHigh();
