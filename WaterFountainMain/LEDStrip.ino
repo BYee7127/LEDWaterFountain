@@ -15,6 +15,7 @@
 #define NUM_LEDS_PER_STRIP 14
 #define NUM_STRIPS 1
 #define NUM_LEDS NUM_LEDS_PER_STRIP
+#define STEPS        300 
 
 // declare the array of LEDs
 CRGB leds[NUM_LEDS_PER_STRIP * NUM_STRIPS];
@@ -45,6 +46,9 @@ int delayCount, colorNum, LEDNum;
 bool fadeOutYN, showColor;
 // chase variables
 int chaseDelay, chaseTotal, chaseCount, chaseCount2, step, initialColor;
+
+// cycle variables
+int cycleDelay, cycleCount;
 
 
 /*
@@ -83,6 +87,8 @@ void setupDelays() {
 
   cycleColorsDelay = 600;
   cycleColorsLength = cycleColorsDelay * arrLength;
+
+  cycleDelay=25;
 
   fadeDelay = 6;
   fadeLength = fadeDelay * 255;  // 255 = max brightness
@@ -679,4 +685,12 @@ void chaseRandom() {
   }
   chaseCount++;
   chaseCount2++;
+}
+
+void fillCycle( uint8_t colorIndex) {
+  for( int i = 0; i < NUM_LEDS_PER_STRIP; i++) {
+    leds[i] = ColorFromPalette(RainbowColors_p, colorIndex, 255, LINEARBLEND);
+    colorIndex += STEPS;              
+  }
+  FastLED.show();
 }
