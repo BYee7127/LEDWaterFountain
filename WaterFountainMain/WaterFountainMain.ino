@@ -83,8 +83,8 @@ void loop() {
     // Serial.println();  //new line
   }
 
-  static uint8_t startIndex = 0;
-  startIndex = startIndex + 1;
+  static float startIndex = 0;
+  startIndex = startIndex+0.25;
 
   // lineUpTest();
   // cycleAllColors(800);
@@ -100,7 +100,8 @@ void loop() {
   // chase(8);
   // chaseRandom();
   // cycleAllPatterns();
-  fillCycle(startIndex);
+  // fillRainbowCycle(startIndex);
+  // fillCycle(startIndex);
 
   // doubleColorWipe(1,3,60);
   // fullColorWipe(60);

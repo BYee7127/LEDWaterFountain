@@ -88,7 +88,7 @@ void setupDelays() {
   cycleColorsDelay = 600;
   cycleColorsLength = cycleColorsDelay * arrLength;
 
-  cycleDelay=25;
+  cycleDelay=100;
 
   fadeDelay = 6;
   fadeLength = fadeDelay * 255;  // 255 = max brightness
@@ -687,10 +687,17 @@ void chaseRandom() {
   chaseCount2++;
 }
 
-void fillCycle( uint8_t colorIndex) {
+void fillRainbowCycle( uint8_t colorIndex) {
   for( int i = 0; i < NUM_LEDS_PER_STRIP; i++) {
     leds[i] = ColorFromPalette(RainbowColors_p, colorIndex, 255, LINEARBLEND);
     colorIndex += STEPS;              
+  }
+  FastLED.show();
+}
+
+void fillCycle( uint8_t colorIndex) {
+  for( int i = 0; i < NUM_LEDS_PER_STRIP; i++) {
+    leds[i] = ColorFromPalette(RainbowColors_p, colorIndex, 255, LINEARBLEND);              
   }
   FastLED.show();
 }
