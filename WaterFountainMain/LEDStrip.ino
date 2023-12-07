@@ -77,7 +77,7 @@ void setupDelays() {
   chaseTotal = 1500;
   chaseCount = 0;
   chaseCount = 0;
-  initialColor=0;
+  initialColor = 0;
   step = 0;
   showSingleDelay = 800;
   showSingleEnd = lineUpDelay + (showSingleDelay * length);
@@ -191,15 +191,15 @@ void cycleAllPatterns() {
     }
   }
 
-  else if(counter == showRandSingleEnd){
+  else if (counter == showRandSingleEnd) {
     fill_solid(leds, NUM_LEDS, clear);
     FastLED.show();
   }
 
   // increment fill to black
   else if (showRandSingleEnd < counter && counter <= fillStaticEnd) {
-    
-    if(fillStaticCount == fillStaticDelay - 1){
+
+    if (fillStaticCount == fillStaticDelay - 1) {
       fillStaticCount = 0;
       fillStaticLED++;
     }
@@ -445,6 +445,33 @@ void incrementFillToBlack(int wait, int index) {
 }
 
 /*
+ * Only one LED is illuminated the entire time and runs across the strip.
+ * 
+ * params:    index - number attached to a color in clist
+ *            wait - how long to delay the function before continuing
+ */
+void singleColorWipe(int index, int wait) {
+
+  if (delayCount == wait) {
+    // delay met, turn off the current LED
+    leds[LEDNum++] = clear;
+    FastLED.show();
+    // and prepare to light the next one
+    LEDNum++;
+    // and reset the delayCount
+    delayCount = 0;
+  }
+
+  if (LEDNum == length) {
+    LEDNum = 0;  // reset the index as to not go out of bounds
+  }
+
+  // make this an else statement?
+  leds[LEDNum] = clist[index];
+  FastLED.show();
+}
+
+/*
  * Fill the entire strip with black to clear the strip.
  */
 void clearStrip() {
@@ -453,22 +480,6 @@ void clearStrip() {
 }
 
 /*************/
-
-
-/*
- * Only one LED is illuminated the entire time and runs across the strip.
- * 
- * params:    index - number attached to a color in clist
- *            wait - how long to delay the function before continuing
- */
-void singleColorWipeStatic(int index, int wait) {
-  for (int i = 0; i < NUM_LEDS; i++) {
-    leds[i] = clist[index];
-    FastLED.delay(wait);
-    leds[i] = clear;
-    FastLED.show();
-  }
-}
 
 /*
  * Only two LEDs is illuminated the entire time and runs across the strip.
@@ -530,126 +541,105 @@ void getRandomColor() {
   previous = current;
 }
 
-void chase(int index)
-{
-  if(chaseCount<=chaseTotal)
-  {
+void chase(int index) {
+  if (chaseCount <= chaseTotal) {
     current = clist[index];
 
-    if(step==0)
-    {
-      leds[0]=current;
-      leds[1]=CRGB::Black;
-      leds[2]=current;
-      leds[3]=CRGB::Black;
-      leds[4]=current;
-      leds[5]=CRGB::Black;
-      leds[6]=current;
-      leds[7]=CRGB::Black;
-      leds[8]=current;
-      leds[9]=CRGB::Black;
-      leds[10]=current;
-      leds[11]=CRGB::Black;
-      leds[12]=current;
-      leds[13]=CRGB::Black;
-    }
-    else if(step==1)
-    {
-      leds[0]=CRGB::Black;
-      leds[1]=current;
-      leds[2]=CRGB::Black;
-      leds[3]=current;
-      leds[4]=CRGB::Black;
-      leds[5]=current;
-      leds[6]=CRGB::Black;
-      leds[7]=current;
-      leds[8]=CRGB::Black;
-      leds[9]=current;
-      leds[10]=CRGB::Black;
-      leds[11]=current;
-      leds[12]=CRGB::Black;
-      leds[13]=current;
-    }
-    else
-    {
-      step=0;
+    if (step == 0) {
+      leds[0] = current;
+      leds[1] = CRGB::Black;
+      leds[2] = current;
+      leds[3] = CRGB::Black;
+      leds[4] = current;
+      leds[5] = CRGB::Black;
+      leds[6] = current;
+      leds[7] = CRGB::Black;
+      leds[8] = current;
+      leds[9] = CRGB::Black;
+      leds[10] = current;
+      leds[11] = CRGB::Black;
+      leds[12] = current;
+      leds[13] = CRGB::Black;
+    } else if (step == 1) {
+      leds[0] = CRGB::Black;
+      leds[1] = current;
+      leds[2] = CRGB::Black;
+      leds[3] = current;
+      leds[4] = CRGB::Black;
+      leds[5] = current;
+      leds[6] = CRGB::Black;
+      leds[7] = current;
+      leds[8] = CRGB::Black;
+      leds[9] = current;
+      leds[10] = CRGB::Black;
+      leds[11] = current;
+      leds[12] = CRGB::Black;
+      leds[13] = current;
+    } else {
+      step = 0;
     }
 
-    if(chaseCount2 == chaseDelay)
-    {
-      chaseCount2=0;
+    if (chaseCount2 == chaseDelay) {
+      chaseCount2 = 0;
       step++;
     }
     FastLED.show();
     FastLED.setBrightness(255);
-  }
-  else
-  {
-    chaseCount=0;
+  } else {
+    chaseCount = 0;
   }
   chaseCount++;
   chaseCount2++;
 }
 
-void chaseRandom()
-{
-  if(initialColor==0)
-  {
+void chaseRandom() {
+  if (initialColor == 0) {
     getRandomColor();
     initialColor++;
   }
-  if(chaseCount<=chaseTotal)
-  {
-    if(step==0)
-    {
-      leds[0]=current;
-      leds[1]=CRGB::Black;
-      leds[2]=current;
-      leds[3]=CRGB::Black;
-      leds[4]=current;
-      leds[5]=CRGB::Black;
-      leds[6]=current;
-      leds[7]=CRGB::Black;
-      leds[8]=current;
-      leds[9]=CRGB::Black;
-      leds[10]=current;
-      leds[11]=CRGB::Black;
-      leds[12]=current;
-      leds[13]=CRGB::Black;
-    }
-    else if(step==1)
-    {
-      leds[0]=CRGB::Black;
-      leds[1]=current;
-      leds[2]=CRGB::Black;
-      leds[3]=current;
-      leds[4]=CRGB::Black;
-      leds[5]=current;
-      leds[6]=CRGB::Black;
-      leds[7]=current;
-      leds[8]=CRGB::Black;
-      leds[9]=current;
-      leds[10]=CRGB::Black;
-      leds[11]=current;
-      leds[12]=CRGB::Black;
-      leds[13]=current;
-    }
-    else
-    {
-      step=0;
+  if (chaseCount <= chaseTotal) {
+    if (step == 0) {
+      leds[0] = current;
+      leds[1] = CRGB::Black;
+      leds[2] = current;
+      leds[3] = CRGB::Black;
+      leds[4] = current;
+      leds[5] = CRGB::Black;
+      leds[6] = current;
+      leds[7] = CRGB::Black;
+      leds[8] = current;
+      leds[9] = CRGB::Black;
+      leds[10] = current;
+      leds[11] = CRGB::Black;
+      leds[12] = current;
+      leds[13] = CRGB::Black;
+    } else if (step == 1) {
+      leds[0] = CRGB::Black;
+      leds[1] = current;
+      leds[2] = CRGB::Black;
+      leds[3] = current;
+      leds[4] = CRGB::Black;
+      leds[5] = current;
+      leds[6] = CRGB::Black;
+      leds[7] = current;
+      leds[8] = CRGB::Black;
+      leds[9] = current;
+      leds[10] = CRGB::Black;
+      leds[11] = current;
+      leds[12] = CRGB::Black;
+      leds[13] = current;
+    } else {
+      step = 0;
     }
 
-    if(chaseCount2 == chaseDelay)
-    {
-      chaseCount2=0;
+    if (chaseCount2 == chaseDelay) {
+      chaseCount2 = 0;
       step++;
     }
     FastLED.show();
     FastLED.setBrightness(255);
-  }
-  else
-  {
-    chaseCount=0;
+  } else {
+    chaseCount = 0;
     getRandomColor();
   }
   chaseCount++;

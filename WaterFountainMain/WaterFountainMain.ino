@@ -90,7 +90,9 @@ void loop() {
   // showSingleFill(1000);
   // showSolid(7);
   incrementFillToBlack(60, 2);
+  // incrementFillToBlack(60);
   // incrementColorFill(60);
+  // singleColorWipe(1, 60);
 
   // incrementFillToBlackRandom(60);
   // incrementFillRandom(60);
