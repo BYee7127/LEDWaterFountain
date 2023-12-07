@@ -4,6 +4,8 @@
  * Author:    Alex Gray & Beverly Yee
  * Date:      August 27, 2023
  * 
+ * Anything and everything to do with the LED strip.
+ *
  **************************************************************************************/
 #include <FastLED.h>
 
@@ -18,8 +20,10 @@
 CRGB leds[NUM_LEDS_PER_STRIP * NUM_STRIPS];
 
 // array of colors to use on the strip
-CRGB clist[10] = { CRGB::Red, CRGB::Lime, CRGB::Magenta, CRGB::Blue, CRGB::OrangeRed, CRGB::ForestGreen, CRGB::Crimson, CRGB::Gold, CRGB::Cyan, CRGB::White };
+CRGB clist[10] = { CRGB::Red, CRGB::Lime, CRGB::Magenta, CRGB::Blue, CRGB::OrangeRed,
+                   CRGB::ForestGreen, CRGB::Crimson, CRGB::Gold, CRGB::Cyan, CRGB::White };
 
+// ================ Delay counters ================
 int length, counter;
 
 int lineUpDelay;
@@ -28,6 +32,14 @@ int bsLength, breatheStaticInEnd, bswait, breatheStaticOutEnd;
 int breatheRandomInEnd, breatheRandomOutEnd;
 int showRandomSingleCount, showRandSingleEnd;
 int fillStaticDelay, fillStaticEnd, fillStaticCount, fillStaticLED;
+
+int prevInt, curInt;
+
+int nextFuncStart;
+
+int delayCount, colorNum, LEDNum;
+
+bool fadeOutYN, showColor;
 int chaseDelay, chaseTotal, chaseCount, chaseCount2, step, initialColor;
 
 CRGB previous, clear, current;
@@ -46,8 +58,7 @@ void setupLED() {
   FastLED.addLeds<NUM_STRIPS, WS2811, DATA_PIN, GRB>(leds, NUM_LEDS_PER_STRIP);
 
   // initially set it to black
-  fill_solid(leds, NUM_LEDS, CRGB::Black);
-  FastLED.show();
+  clearStrip();
 
   counter = 0;
   setupDelays();
@@ -56,6 +67,9 @@ void setupLED() {
   randomSeed(analogRead(16));
 }
 
+/*
+ * 
+ */
 void setupDelays() {
   lineUpDelay = 2000;
 
@@ -83,6 +97,10 @@ void setupDelays() {
   fillStaticCount = 0;
   fillStaticLED = 0;
   fillStaticEnd = showRandSingleEnd + (fillStaticDelay * NUM_LEDS);
+
+  delayCount = 0;
+  LEDNum = 0;
+  colorNum = 0;
 }
 
 /*
@@ -205,8 +223,6 @@ void cycleAllPatterns() {
 /*
  * Assign each LED with a different color from clist.
  * A test to see how the LEDs are addressable and if they all work.
- * 
- * params:    none
  */
 void lineUpTest() {
   int c = 0;
@@ -225,75 +241,219 @@ void lineUpTest() {
 
 /*************/
 /*
- * Each call to this function shows a different color.
+ * Cycles through all the colors of the color array
+ *
+ * params:  wait - how long the counter iterates before switching colors
+ *                 Simulates a delay
+ */
+void cycleAllColors(int wait) {
+  if (delayCount == wait) {
+    // reset delay count when the delay is met
+    delayCount = 0;
+    // update the index to the color array
+    colorNum++;
+  }
+
+  if (colorNum == length) {
+    // reset colorNum to the beginning of the array
+    colorNum = 0;
+  }
+
+  fill_solid(leds, NUM_LEDS, clist[colorNum]);
+  FastLED.show();
+  delayCount++;
+}
+
+/*
+ * Fade into color and fade out into black. When fading back into color,
+ * change to a different color, chosen at random.
+ *
+ * params:  wait - the time between adjustments of brightness level
+ */
+void fadeInOut(int wait) {
+  // the length of half of the pattern
+  int bsDelay = wait * 255;
+
+  // utilize a boolean to determine whether to fade in or out
+  if (delayCount == bsDelay) {
+    // start fade out when hitting the peak of pattern
+    fadeOutYN = true;
+  } else if (delayCount == 0) {
+    // flip the boolean to fade back into color
+    fadeOutYN = false;
+    // swap the color
+    getRandomColor();
+  }
+
+  if (fadeOutYN) {
+    // fading out, so decrement
+    delayCount--;
+  } else {
+    delayCount++;
+  }
+
+  fill_solid(leds, NUM_LEDS, current);
+
+  // delayCount is going to be higher than 255, so divide by wait
+  FastLED.setBrightness(delayCount / wait);
+  FastLED.show();
+}
+
+/*
+ * Fade into color and fade out into black.
+ * Override of the random color version for single color only.
+ *
+ * params:  wait - the time between adjustments of brightness level
+ *          index - the number attached to the color in the array
+ */
+void fadeInOut(int wait, int index) {
+  int bsDelay = wait * 255;
+  if (delayCount == bsDelay) {
+    fadeOutYN = true;
+  } else if (delayCount == 0) {
+    fadeOutYN = false;
+  }
+
+  if (fadeOutYN) {
+    // fading out, so decrement
+    delayCount--;
+  } else {
+    delayCount++;
+  }
+
+  fill_solid(leds, NUM_LEDS, clist[index]);
+  FastLED.setBrightness(delayCount / wait);
+  FastLED.show();
+}
+
+/*
+ * Fill the entire strip with a singluar color.
+ * After "wait" is met, use a different color.
+ *
+ * params:  wait - the time between the next color
+ */
+void showSingleFill(int wait) {
+  if (delayCount == wait) {
+    delayCount = 0;
+    getRandomColor();
+  }
+
+  fill_solid(leds, NUM_LEDS, current);
+  FastLED.show();
+
+  delayCount++;
+}
+
+/*
+ * Fill the entire strip with a singular color, passed in as an argument.
+ *
+ * params:  index - the number attached to the color in the array.
+ */
+void showSolid(int index) {
+  fill_solid(leds, NUM_LEDS, clist[index]);
+  FastLED.show();
+}
+
+/*
+ * Incrementally fill the LED strip with a color.
+ * The next time the strip fills, it will be a different color.
+ * i.e., after the LED is filled with a color, it doesn't clear.
  * 
  * params:    wait - how long to delay the function before continuing
  */
+void incrementColorFill(int wait) {
+  // the time between lighting the previous LED to lighting the next LED
+  int fillDelay = wait * NUM_LEDS;
 
+  if (delayCount == fillDelay) {
+    delayCount = 0;
+  } else if (delayCount == 0) {
+    // change the color at the start of the new pattern
+    // this also allows a random color at startup
+    getRandomColor();
+  }
+
+  // the delayCount works on the index of the strip
+  leds[delayCount / wait] = clist[current];
+  FastLED.show();
+
+  delayCount++;
+}
 
 /*
- * Every call to this function lights the strip in a different color.
- * 
- * params:    wait - how long to delay the function before continuing
- */
-
-/*
- * Incrementally fill the LED strip with a color then black
+ * Incrementally fill the LED strip with a color then increment fill to black.
+ * When the pattern executes again, it will be a different color.
  * 
  * params:    index - number attached to a color in clist
  *            wait - how long to delay the function before continuing
  */
-void incrementFillToBlackStatic(int index, int wait) {
-  for (int i = 0; i < NUM_LEDS; i++) {
-    leds[i] = clist[index];
-    FastLED.show();
-    FastLED.delay(wait);
-  }
+void incrementFillToBlack(int wait) {
+  // the time between lighting the previous LED to lighting the next LED
+  int fillDelay = wait * NUM_LEDS;
 
-  // once the strip is filled with color, go to black
-  for (int i = 0; i < NUM_LEDS; i++) {
-    leds[i] = clear;
-    FastLED.show();
-    FastLED.delay(wait);
-  }
-}
-
-/*
- * Incrementally fill the LED strip with a color then black
- * Every call to this function has a different color
- * 
- * params:    wait - how long to delay the function before continuing
- */
-void incrementFillToBlackRandom(int wait) {
-  getRandomColor();
-
-  for (int i = 0; i < NUM_LEDS; i++) {
-    leds[i] = current;
-    FastLED.show();
-    FastLED.delay(wait);
-  }
-
-  // once the strip is filled with color, go to black
-  for (int i = 0; i < NUM_LEDS; i++) {
-    leds[i] = clear;
-    FastLED.show();
-    FastLED.delay(wait);
-  }
-}
-
-/*
- * Each incremental LED is a different, random color.
- * Does not fill to black afterwards.
- * 
- * params:    wait - how long to delay the function before continuing
- */
-void incrementFillRandom(int wait) {
-  for (int i = 0; i < NUM_LEDS; i++) {
+  if (delayCount == fillDelay) {
+    // flip the bool to start the other part of the pattern
+    showColor = !showColor;
+    delayCount = 0;
+  } else if (delayCount == 0) {
+    // change the color at the start of the new pattern
+    // this also allows a random color at startup
     getRandomColor();
-    leds[i] = current;
+  }
+
+  // show the color
+  if (showColor) {
+    // the delayCount works on the index of the strip
+    leds[delayCount / wait] = clist[current];
+    FastLED.show();
+  } else {
+    // when showColor == false, clear it
+    leds[delayCount / wait] = clear;
+    FastLED.show();
     FastLED.delay(wait);
   }
 }
+
+/*
+ * Incrementally fill the LED strip with a color then increment fill to black.
+ * 
+ * params:    wait - how long to delay the function before continuing
+ *            index - number attached to the color in the array
+ */
+void incrementFillToBlack(int wait, int index) {
+  // the time between lighting the previous LED to lighting the next LED
+  int fillDelay = wait * NUM_LEDS;
+
+  if (delayCount == fillDelay) {
+    // flip the bool to start the other part of the pattern
+    showColor = !showColor;
+    delayCount = 0;
+  }
+
+  // show the color
+  if (showColor) {
+    // the delayCount works on the index of the strip
+    leds[delayCount / wait] = clist[index];
+    FastLED.show();
+  } else {
+    // when showColor == false, clear it
+    leds[delayCount / wait] = clear;
+    FastLED.show();
+  }
+
+  delayCount++;
+}
+
+/*
+ * Fill the entire strip with black to clear the strip.
+ */
+void clearStrip() {
+  fill_solid(leds, NUM_LEDS, CRGB::Black);
+  FastLED.show();
+}
+
+/*************/
+
 
 /*
  * Only one LED is illuminated the entire time and runs across the strip.
@@ -355,8 +515,6 @@ void fullColorWipe(int wait) {
  * Helper function to grab a random color then determine whether it is the same as
  * the previously generated color. While it is still the same, keep randomizing 
  * until the current color is different than the previous.
- * 
- * params:    none
  */
 void getRandomColor() {
   current = clist[random(length)];

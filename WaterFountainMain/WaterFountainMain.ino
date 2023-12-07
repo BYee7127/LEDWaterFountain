@@ -38,21 +38,43 @@ static float FFTarray[12];
 extern "C" uint32_t set_arm_clock(uint32_t frequency);
 #endif
 
+// ================ Pump macros ================
+#define PUMP_1 11
+#define PUMP_2 10
+#define PUMP_3 9
+#define PUMP_4 8
+#define PUMP_5 7
+#define PUMP_6 6
+#define PUMP_7 5
+#define PUMP_8 4
+#define PUMP_9 3
+#define PUMP_10 2
+#define PUMP_11 1
+#define PUMP_12 0
+
+// ================ Main code ================
+/*
+ * Setup everything at startup.
+ * Runs only once.
+ */
 void setup() {
   Serial.begin(9600);
   AudioMemory(13);
-  #if defined(__IMXRT1062__)
-    set_arm_clock(600000000);
-  #endif
+#if defined(__IMXRT1062__)
+  set_arm_clock(600000000);
+#endif
   setupLED();
   amp1.gain(35.0);
 }
 
+/*
+ * Endless loop.
+ */
 void loop() {
   if (fft256.available())  //verify fft has output data
   {
     averageFFT();
-    for (int i = 0; i < 12; i++)  //for every fft bin set the pump
+    for (int i = 0; i < 12; i++)  //for every fft, bin set the pump
     {
       // Serial.print((double)FFTarray[i], 3);  //print fft bin for testing
       // Serial.print(" ");
@@ -62,10 +84,14 @@ void loop() {
   }
 
   // lineUpTest();
-  // cycleAllColors(1000);
-  // breatheStatic(3, 5);
-  // showRandomColor(1000);
-  // incrementFillToBlackStatic(2, 60);
+  // cycleAllColors(800);
+  // fadeInOut(8);
+  // fadeInOut(8, 5);
+  // showSingleFill(1000);
+  // showSolid(7);
+  incrementFillToBlack(60, 2);
+  // incrementColorFill(60);
+
   // incrementFillToBlackRandom(60);
   // incrementFillRandom(60);
   // singleColorWipeStatic(5, 60);
@@ -79,24 +105,27 @@ void loop() {
   // pumpsHigh();
 }
 
+// ================ Helper functions ================
 /*
- * Sets given pump based on value from FFT
+ * Sets given pump based on value from FFT.
+ * 
+ * Calculates the bottom threshold of the bin attached to the pump.
+ * Do not turn on the pump. Otherwise, calculate the max height of the pump
+ * in respect to the other pumps and turn it on.
  */
 void setPump(int pump, float val) {
-  float newVal;
-  if (pump == 0)  //pump12
-  {
+  float newVal;  // value to pass to the pump
+  if (pump == PUMP_12) {
     if (FFTarray[pump] < 0.10)  //lower threshold
     {
-      analogWrite(pump, 0);
+      analogWrite(pump, 0);  // don't turn on
     } else {
       newVal = (val)*70 + 125;
       analogWrite(pump, newVal);
     }
   }
 
-  if (pump == 1)  //pump11
-  {
+  if (pump == PUMP_11) {
     if (FFTarray[pump] < 0.10) {
       analogWrite(pump, 0);
     } else {
@@ -105,8 +134,7 @@ void setPump(int pump, float val) {
     }
   }
 
-  if (pump == 2)  //pump10
-  {
+  if (pump == PUMP_10) {
     if (FFTarray[pump] < 0.10) {
       analogWrite(pump, 0);
     } else {
@@ -115,8 +143,7 @@ void setPump(int pump, float val) {
     }
   }
 
-  if (pump == 3)  //pump9
-  {
+  if (pump == PUMP_9) {
     if (FFTarray[pump] < 0.10) {
       analogWrite(pump, 0);
     } else {
@@ -125,8 +152,7 @@ void setPump(int pump, float val) {
     }
   }
 
-  if (pump == 4)  //pump8
-  {
+  if (pump == PUMP_8) {
     if (FFTarray[pump] < 0.10) {
       analogWrite(pump, 0);
     } else {
@@ -135,8 +161,7 @@ void setPump(int pump, float val) {
     }
   }
 
-  if (pump == 5)  //pump7
-  {
+  if (pump == PUMP_7) {
     if (FFTarray[pump] < 0.10) {
       analogWrite(pump, 0);
     } else {
@@ -145,8 +170,7 @@ void setPump(int pump, float val) {
     }
   }
 
-  if (pump == 6)  //pump6
-  {
+  if (pump == PUMP_6) {
     if (FFTarray[pump] < 0.08) {
       analogWrite(pump, 0);
     } else {
@@ -155,8 +179,7 @@ void setPump(int pump, float val) {
     }
   }
 
-  if (pump == 7)  //pump5
-  {
+  if (pump == PUMP_5) {
     if (FFTarray[pump] < 0.08) {
       analogWrite(pump, 0);
     } else {
@@ -165,8 +188,7 @@ void setPump(int pump, float val) {
     }
   }
 
-  if (pump == 8)  //pump4
-  {
+  if (pump == PUMP_4) {
     if (FFTarray[pump] < 0.07) {
       analogWrite(pump, 0);
     } else {
@@ -175,8 +197,7 @@ void setPump(int pump, float val) {
     }
   }
 
-  if (pump == 9)  //pump3
-  {
+  if (pump == PUMP_3) {
     if (FFTarray[pump] < 0.10) {
       analogWrite(pump, 0);
     } else {
@@ -185,8 +206,7 @@ void setPump(int pump, float val) {
     }
   }
 
-  if (pump == 10)  //pump2
-  {
+  if (pump == PUMP_2) {
     if (FFTarray[pump] < 0.10) {
       analogWrite(pump, 0);
     } else {
@@ -195,8 +215,7 @@ void setPump(int pump, float val) {
     }
   }
 
-  if (pump == 11)  //pump1
-  {
+  if (pump == PUMP_1) {
     if (FFTarray[pump] < 0.06) {
       analogWrite(pump, 0);
     } else {
@@ -252,8 +271,7 @@ void averageFFT() {
     if (i == 11)  // (4 Khz - 6 khz | presence range of frequencies)
     {
       FFTarray[i] = fft256.read(10, 23) / 12;
-    } 
-    else  //all other bins from 0-10 are not averaged (344 hz - 1.9 Khz | low to mid range frequencies)
+    } else  //all other bins from 0-10 are not averaged (344 hz - 1.9 Khz | low to mid range frequencies)
     {
       FFTarray[i] = fft256.read((i - 1) + 1);
     }
