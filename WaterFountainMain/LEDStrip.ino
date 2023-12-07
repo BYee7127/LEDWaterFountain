@@ -74,7 +74,7 @@ void setupDelays() {
   lineUpDelay = 2000;
 
   chaseDelay = 50;
-  chaseTotal = 1500;
+  chaseTotal = 500;
   chaseCount = 0;
   chaseCount = 0;
   initialColor = 0;
@@ -575,18 +575,20 @@ void chase(int index) {
       leds[11] = current;
       leds[12] = CRGB::Black;
       leds[13] = current;
-    } else {
-      step = 0;
     }
 
-    if (chaseCount2 == chaseDelay) {
-      chaseCount2 = 0;
-      step++;
+    if(chaseCount2 == chaseDelay)
+    {
+      chaseCount2=0;
+      if(step==0) step=1;
+      else step=0;
     }
+
     FastLED.show();
     FastLED.setBrightness(255);
   } else {
     chaseCount = 0;
+    chaseCount2 = 0;
   }
   chaseCount++;
   chaseCount2++;
@@ -628,18 +630,19 @@ void chaseRandom() {
       leds[11] = current;
       leds[12] = CRGB::Black;
       leds[13] = current;
-    } else {
-      step = 0;
     }
-
-    if (chaseCount2 == chaseDelay) {
-      chaseCount2 = 0;
-      step++;
+ 
+    if(chaseCount2 == chaseDelay)
+    {
+      chaseCount2=0;
+      if(step==0) step=1;
+      else step=0;
     }
     FastLED.show();
     FastLED.setBrightness(255);
   } else {
     chaseCount = 0;
+    chaseCount2 = 0;
     getRandomColor();
   }
   chaseCount++;

@@ -89,8 +89,8 @@ void loop() {
   // fadeInOut(8, 5);
   // showSingleFill(1000);
   // showSolid(7);
-  incrementFillToBlack(60, 2);
   // incrementFillToBlack(60);
+  // incrementFillToBlack(60, 2);
   // incrementColorFill(60);
   // singleColorWipe(1, 60);
 
@@ -99,8 +99,8 @@ void loop() {
   // singleColorWipeStatic(5, 60);
   // doubleColorWipe(1,3,60);
   // fullColorWipe(60);
-  //cycleAllPatterns();
-  //chase(8);
+  // cycleAllPatterns();
+  // chase(8);
   chaseRandom();
 
   // pumpsOff();
