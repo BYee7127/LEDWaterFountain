@@ -83,9 +83,6 @@ void loop() {
     // Serial.println();  //new line
   }
 
-  static float startIndex = 0;
-  startIndex = startIndex+0.25;
-
   // lineUpTest();
   // cycleAllColors(800);
   // fadeInOut(8);
@@ -97,11 +94,11 @@ void loop() {
   // incrementColorFill(60);
   // singleColorWipe(1, 30);
   // singleColorWipe(30);
-  // chase(8);
-  // chaseRandom();
-  // cycleAllPatterns();
-  // fillRainbowCycle(startIndex);
-  // fillCycle(startIndex);
+  // chaseRandom(80, 10);
+  // chaseIndex(80, 8);
+  // fillRainbowCycle();
+  // fillCycle();
+  cycleAllPatterns();
 
   // doubleColorWipe(1,3,60);
   // fullColorWipe(60);
