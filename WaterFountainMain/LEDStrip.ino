@@ -31,7 +31,7 @@ CRGB previous, clear, current;
 
 // ================ Delay counters ================
 int lineUpDelay;
-int cycleColorsDelay, cycleColorsLength, cycleColorsEnd;
+int cycleColorsDelay, cycleColorsLength, cycleColorsEnd, cycleColorsCount;
 int fadeLength, fadeInOutEnd, fadeDelay, fadeCount;
 int incrementFillDelay, incrementFillLength, incrementFillEnd, incrementFillCount;
 int incrementColorLength, incrementColorEnd, incrementColorCount;
@@ -72,147 +72,75 @@ void setupLED() {
 /*
  *
  */
-void setupDelays() {
-  // line up test delay
-  lineUpDelay = 2000;
-
-  // cycle all colors calculations
-  cycleColorsDelay = 600;
-  cycleColorsLength = cycleColorsDelay * arrLength;
-
-  // fade in out calculations
-  fadeDelay = 4;
-  fadeLength = (fadeDelay * 255) * 2;  // 255 = max brightness, x2 to account for in then out times
-  fadeCount = 3;                       // iterations of fade
-
-  // increment fill to black calculations
-  incrementFillDelay = 50;
-  incrementFillLength = (incrementFillDelay * NUM_LEDS) * 2;  // x2 to do color then black
-  incrementFillCount = 3;
-
-  // increment fill color to color
-  incrementColorLength = (incrementFillDelay * NUM_LEDS);
-  incrementColorCount = 6;
-
-  // single LED color wipe
-  wipeDelay = 30;
-  wipeLength = (wipeDelay * NUM_LEDS);
-  wipeCount = 5;
-
-  // chase/switching LEDs
-  chaseDelay = 70;  // delay between the odd and even LEDs
-  chaseCount = 9;  // how many times to show before switching colors
-  chaseLength = chaseDelay * (chaseCount * 2);
-  chaseColor = 4;  // number of colors to show
-
-  // rainbow cycle calculations
-  cycleDelay = 5000;
-}
-
-/*
- * 
- */
-void resetCounts() {
-  // master counter for cycleAllPatterns
-  counter = 0;
-
-  // master delay counter
-  delayCount = 0;
-  iterateCount = 0;
-
-  // LED strip index
-  LEDNum = 0;
-
-  // color array index
-  colorNum = 0;
-
-  // used for increment to fill then to black functions
-  // must reset to true to show the color
-  showColor = true;
-
-  // end of pattern variables
-  cycleColorsEnd = 0;
-  fadeInOutEnd = 0;
-  incrementFillEnd = 0;
-  incrementColorEnd = 0;
-  wipeEnd = 0;
-  chaseEnd = 0;
-  cycleRainbowEnd = 0;
-  cycleStripEnd = 0;
-
-  // this one may not matter, but good for initialization
-  switchLED = true;
-}
-
-/*
- *
- */
 void cycleAllPatterns() {
   if (counter < lineUpDelay) {
     lineUpTest();
   } else if (counter == lineUpDelay) {
-    // SETUP lineUpTest -> cycleAllColors setup
-    cycleColorsEnd = lineUpDelay + cycleColorsLength;
+    // SETUP singleColorWipe -> chaseRandom
     delayCount = 0;
-  } else if (lineUpDelay < counter && counter < cycleColorsEnd) {
+    chaseEnd = lineUpDelay + (chaseLength * chaseColor);
+    clearStrip();
+    getRandomColor();
+  } else if (lineUpDelay < counter && counter < chaseEnd) {
+    // switch LEDs are on at a given time
+    chaseRandom(chaseDelay, chaseCount);
+  } else if (counter == chaseEnd) {
+    // SETUP lineUpTest -> fillRainbowCylcle
+    cycleStripEnd = chaseEnd + cycleDelay;
+    clearStrip();
+  } else if (chaseEnd < counter && counter < cycleStripEnd) {
+    static float startIndex = 0;
+    startIndex = startIndex + 0.5;
+    // individual blend into color rainbow
+    fillRainbowCycle(startIndex);
+  } else if (counter == cycleStripEnd) {
+    // SETUP fillRainbowCycle -> cycleAllColors
+    cycleColorsEnd = cycleStripEnd + (cycleColorsLength * cycleColorsCount);
+    delayCount = 0;
+  } else if (cycleStripEnd < counter && counter < cycleColorsEnd) {
     // cycle through all colors
     cycleAllColors(cycleColorsDelay);
   } else if (counter == cycleColorsEnd) {
-    // SETUP cycleAllColors -> fadeInOut
-    fadeInOutEnd = cycleColorsEnd + (fadeLength * fadeCount);
-    delayCount = 0;
-  } else if (cycleColorsEnd < counter && counter < fadeInOutEnd) {
-    // fade in/out random colors
-    fadeInOut(fadeDelay);
-  } else if (counter == fadeInOutEnd) {
-    // SETUP fadeInOut -> incrementFilltoBlack
+    // SETUP cycleAllColors -> incrementFilltoBlack
     clearStrip();  // need to reset the brightness after fade items
-    incrementFillEnd = fadeInOutEnd + (incrementFillLength * incrementFillCount);
+    incrementFillEnd = cycleColorsEnd + (incrementFillLength * incrementFillCount);
     delayCount = 0;
-  } else if (fadeInOutEnd < counter && counter < incrementFillEnd) {
+    getRandomColor();
+  } else if (cycleColorsEnd < counter && counter < incrementFillEnd) {
     // increment fill then to black
     incrementFillToBlack(incrementFillDelay);
   } else if (counter == incrementFillEnd) {
-    // SETUP incrementFillToBlack -> incrementColorFill
-    incrementColorEnd = incrementFillEnd + (incrementColorLength * incrementColorCount);
+    // SETUP cycleAllColors -> fadeInOut
+    fadeInOutEnd = incrementFillEnd + (fadeLength * fadeCount);
     delayCount = 0;
-  } else if (incrementFillEnd < counter && counter < incrementColorEnd) {
+  } else if (incrementFillEnd < counter && counter < fadeInOutEnd) {
+    // fade in/out random colors
+    fadeInOut(fadeDelay);
+  } else if (counter == fadeInOutEnd) {
+    // SETUP fadeInOut -> incrementColorFill
+    incrementColorEnd = fadeInOutEnd + (incrementColorLength * incrementColorCount);
+    delayCount = 0;
+    clearStrip();
+  } else if (fadeInOutEnd < counter && counter < incrementColorEnd) {
     // increment color fill without clearing
     incrementColorFill(incrementFillDelay);
   } else if (counter == incrementColorEnd) {
     // SETUP incrementColorFill -> singleColorWipe
     delayCount = 0;
+    LEDNum = 0;
     wipeEnd = incrementColorEnd + (wipeLength * wipeCount);
   } else if (incrementColorEnd < counter && counter < wipeEnd) {
     // only one LED is on at all times
     singleColorWipe(wipeDelay);
   } else if (counter == wipeEnd) {
-    // SETUP singleColorWipe -> chaseRandom
-    delayCount = 0;
-    LEDNum = 0;
-    chaseEnd = wipeEnd + (chaseLength * chaseColor);
-    clearStrip();
-    getRandomColor();
-  } else if (wipeEnd < counter && counter < chaseEnd) {
-    // switch LEDs are on at a given time
-    chaseRandom(chaseDelay, chaseCount);
-  } else if (counter == chaseEnd) {
     // SETUP chaseRandom -> fullCycle
     delayCount = 0;
-    cycleRainbowEnd = chaseEnd + cycleDelay;
-  } else if(chaseEnd < counter && counter < cycleRainbowEnd) {
+    cycleRainbowEnd = wipeEnd + cycleDelay;
+  } else if (wipeEnd < counter && counter < cycleRainbowEnd) {
     static float startIndex = 0;
     startIndex = startIndex + 0.25;
     // full strip blend into next color, rainbow style
     fillCycle(startIndex);
-  } else if(counter == cycleRainbowEnd){
-    // SETUP filCylce -> fillRainbowCylcle
-    cycleStripEnd = cycleRainbowEnd + cycleDelay;
-  } else if(cycleRainbowEnd < counter && counter < cycleStripEnd){
-    static float startIndex = 0;
-    startIndex = startIndex + 0.5;
-    // individual blend into color rainbow
-    fillRainbowCycle(startIndex);
   }
   // reset everything
   else {
@@ -620,46 +548,78 @@ void getRandomColor() {
   previous = current;
 }
 
-/*************/
+/*
+ *
+ */
+void setupDelays() {
+  // line up test delay
+  lineUpDelay = 2000;
+
+  // cycle all colors calculations
+  cycleColorsDelay = 500;
+  cycleColorsLength = cycleColorsDelay * arrLength;
+  cycleColorsCount = 2;
+
+  // fade in out calculations
+  fadeDelay = 5;
+  fadeLength = (fadeDelay * 255) * 2;  // 255 = max brightness, x2 to account for in then out times
+  fadeCount = 5;                       // iterations of fade
+
+  // increment fill to black calculations
+  incrementFillDelay = 50;
+  incrementFillLength = (incrementFillDelay * NUM_LEDS) * 2;  // x2 to do color then black
+  incrementFillCount = 5;
+
+  // increment fill color to color
+  incrementColorLength = (incrementFillDelay * NUM_LEDS);
+  incrementColorCount = 8;
+
+  // single LED color wipe
+  wipeDelay = 40;
+  wipeLength = (wipeDelay * NUM_LEDS);
+  wipeCount = 10;
+
+  // chase/switching LEDs
+  chaseDelay = 70;  // delay between the odd and even LEDs
+  chaseCount = 10;   // how many times to show before switching colors
+  chaseLength = chaseDelay * (chaseCount * 2);
+  chaseColor = 5;  // number of colors to show
+
+  // rainbow cycle calculations
+  cycleDelay = 10000;
+}
 
 /*
- * Only two LEDs is illuminated the entire time and runs across the strip.
  * 
- * params:    index1 - number attached to a color in clist
-              index2 - number attached to a color in clist, follows index1
- *            wait - how long to delay the function before continuing
  */
-void doubleColorWipe(int index1, int index2, int wait) {
-  for (int i = 0; i < NUM_LEDS; i++) {
-    leds[i] = clist[index1];
-    leds[i - 1] = clist[index2];
-    FastLED.delay(wait);
-    leds[i - 1] = clear;
-    leds[i] = clear;
-    FastLED.show();
-  }
+void resetCounts() {
+  // master counter for cycleAllPatterns
+  counter = 0;
+
+  // master delay counter
+  delayCount = 0;
+  iterateCount = 0;
+
+  // LED strip index
+  LEDNum = 0;
+
+  // color array index
+  colorNum = 0;
+
+  // used for increment to fill then to black functions
+  // must reset to true to show the color
+  showColor = true;
+
+  // end of pattern variables
+  cycleColorsEnd = 0;
+  fadeInOutEnd = 0;
+  incrementFillEnd = 0;
+  incrementColorEnd = 0;
+  wipeEnd = 0;
+  chaseEnd = 0;
+  cycleRainbowEnd = 0;
+  cycleStripEnd = 0;
+
+  // this one may not matter, but good for initialization
+  switchLED = true;
 }
-
-void fullColorWipe(int wait) {
-  int c = 0;
-  for (int i = 0; i < NUM_LEDS; i++) {
-    for (int j = NUM_LEDS; j > 0; j--) {
-      leds[j - i] = clist[c];
-      if (c >= arrLength) {
-        c = 9;
-      }
-      c++;
-    }
-
-    FastLED.show();
-    FastLED.delay(wait);
-  }
-
-  // for (int i = 0; i < NUM_LEDS; i++) {
-  //   for (int j = arrLength - 1; j >= 0; j++) {
-  //     leds[i - j] = CRGB::White;
-  //   }
-  //   FastLED.show();
-  // }
-}
-
